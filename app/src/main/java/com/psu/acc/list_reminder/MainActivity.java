@@ -29,15 +29,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         Button bAddList =(Button) findViewById(R.id.bAddList);
-        bAddList.setOnClickListener(new View.OnClickListener()
-        {
-
+        bAddList.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
-
-//                Intent intent = new Intent(v.getContext(),Template.class);
-//                startActivity(intent);
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), Templates.class);
+                startActivity(intent);
             }
         });
     }
@@ -63,4 +59,5 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
 }
