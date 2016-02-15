@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         Button bAddList =(Button) findViewById(R.id.bAddList);
+
         bAddList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
