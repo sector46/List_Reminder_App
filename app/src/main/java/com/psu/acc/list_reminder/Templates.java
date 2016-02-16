@@ -40,8 +40,16 @@ public class Templates extends Activity  {
             public void onClick(View v)
             {
                     //display a new list....
-//                Intent intent = new Intent(v.getContext(),Templates.class);
-//                startActivity(intent);
+            setContentView(R.layout.new_list);
+                Button bNewReminder = (Button) findViewById(R.id.bNewReminder);
+                bNewReminder.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(v.getContext(), Reminder.class);
+                        startActivity(intent);
+                    }
+                });
             }
         });
 
