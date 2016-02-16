@@ -17,21 +17,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/sUpdateList"
-        android:layout_below="@+id/eTExistingList"
+        android:layout_below="@+id/tvExistinglist"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="87dp"
+
         android:spinnerMode="dropdown"
         />
 
-    <EditText
+
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/eTExistingList"
-
-        android:layout_below="@+id/bNewList"
-        android:layout_marginTop="32dp"
         android:text="Choose from Existing Lists:"
-        android:layout_alignRight="@+id/bNewList"
-        android:layout_alignEnd="@+id/bNewList" />
+        android:id="@+id/tvExistinglist"
+        android:layout_below="@+id/bNewList"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="82dp"
+        android:textColor="#050505" />
 
 </RelativeLayout>

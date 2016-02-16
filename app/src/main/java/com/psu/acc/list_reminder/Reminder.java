@@ -1,14 +1,24 @@
 package com.psu.acc.list_reminder;
 
+import android.annotation.SuppressLint;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.format.DateFormat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.TimePicker;
+
+import java.util.Calendar;
 
 /**
  * Created by chandhnikannatintavida on 2/14/16.
@@ -18,6 +28,9 @@ public class Reminder extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.reminder);
+
+
+
 
         //repeat alarm...
         final String array_spinner[];
@@ -34,27 +47,47 @@ public class Reminder extends AppCompatActivity {
         ArrayAdapter adapter = new ArrayAdapter(Reminder.this, android.R.layout.simple_spinner_item, array_spinner);
 
         s.setAdapter(adapter);
+        TextView tvDate = (TextView) findViewById(R.id.tvDate);
+        TextView tv = (TextView) findViewById(R.id.tvTime);
+
+        tvDate.setText("DD:MM:YY");
+        tv.setText("HH:MM");
 
         // set date and time....
 
-        Button bDate =(Button) findViewById(R.id.bDate);
+        Button bDate = (Button) findViewById(R.id.bDate);
+
         bDate.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), DatePicker.class);
-                startActivity(intent);
+            public void onClick(View view) {
+                DialogFragment newFragment = new SelectDateFragmentTrans();
+                newFragment.show(getFragmentManager(), "DatePicker");
             }
         });
-        Button bTime =(Button) findViewById(R.id.bTime);
+        Button bTime = (Button) findViewById(R.id.bTime);
         bTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), TimePicker.class);
-                startActivity(intent);
+//                Intent intent = new Intent(v.getContext(), Time_Picker.class);
+//                startActivity(intent);
+                DialogFragment newFragment = new TimePickerFragment();
+                newFragment.show(getFragmentManager(), "TimePicker");
+
             }
         });
 
+        Button bDone = (Button) findViewById(R.id.bDone);
+        bDone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), ViewListActivity.class);
+                startActivity(intent);
+
+
+            }
+        });
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -76,6 +109,65 @@ public class Reminder extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    @SuppressLint("ValidFragment")
+    public class SelectDateFragmentTrans extends DialogFragment
+            implements DatePickerDialog.OnDateSetListener {
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            final Calendar calendar = Calendar.getInstance();
+            int yy = calendar.get(Calendar.YEAR);
+            int mm = calendar.get(Calendar.MONTH);
+            int dd = calendar.get(Calendar.DAY_OF_MONTH);
+            return new DatePickerDialog(getActivity(), this, yy, mm, dd);
+        }
+
+
+        public void populateSetDate(int year, int month, int day) {
+            String date1 = month + "/" + day + "/" + year;
+//            TransferFragment.date.setText(month+"/"+day+"/"+year);
+            TextView tvDate = (TextView) findViewById(R.id.tvDate);
+            tvDate.setText(date1);
+        }
+
+        @Override
+        public void onDateSet(android.widget.DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+
+
+            populateSetDate(year, monthOfYear + 1, dayOfMonth);
+
+        }
+    }
+
+    @SuppressLint("ValidFragment")
+    public class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener{
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState){
+            //Use the current time as the default values for the time picker
+            final Calendar c = Calendar.getInstance();
+            int hour = c.get(Calendar.HOUR_OF_DAY);
+            int minute = c.get(Calendar.MINUTE);
+
+            //Create and return a new instance of TimePickerDialog
+            return new TimePickerDialog(getActivity(),this, hour, minute,
+                    DateFormat.is24HourFormat(getActivity()));
+        }
+
+        //onTimeSet() callback method
+        public void onTimeSet(TimePicker view, int hourOfDay, int minute){
+            //Do something with the user chosen time
+            //Get reference of host activity (XML Layout File) TextView widget
+
+            //Set a message for user
+            TextView tv = (TextView) findViewById(R.id.tvTime);
+            //Display the user changed time on TextView
+            tv.setText(String.valueOf(hourOfDay)+" : "
+                    + String.valueOf(minute));
+        }
     }
 
 }

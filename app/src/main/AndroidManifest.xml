@@ -20,7 +20,6 @@
         </activity>
 
         <activity android:name=".Templates"/>
-        <activity android:name=".GroceryTemplate"/>
         <activity android:name=".Reminder"/>
         <activity android:name=".ViewListActivity"/>
     </application>
