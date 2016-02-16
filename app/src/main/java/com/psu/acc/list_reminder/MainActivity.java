@@ -9,9 +9,16 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+
+    private ListView existingListsView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +44,22 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        existingListsView = (ListView)findViewById(R.id.existingListsView);
+        displayExistingLists();
+    }
+
+    private void displayExistingLists(){
+
+        // TODO: this arraylist should be initialized with the lists that are already created.
+        List<String> existingLists = new ArrayList<>();
+        existingLists.add("Grocery List");
+        existingLists.add("Pills List");
+        existingLists.add("Christmas shopping");
+
+        ArrayAdapter adapter = new ArrayAdapter(MainActivity.this, android.R.layout.simple_list_item_1,existingLists);
+
+        existingListsView.setAdapter(adapter);
     }
 
     @Override
