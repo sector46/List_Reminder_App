@@ -40,16 +40,17 @@ public class Templates extends Activity  {
             public void onClick(View v)
             {
                     //display a new list....
-            setContentView(R.layout.new_list);
-                Button bNewReminder = (Button) findViewById(R.id.bNewReminder);
-                bNewReminder.setOnClickListener(new View.OnClickListener() {
+                Intent intent = new Intent(v.getContext(), ViewListActivity.class);
+                startActivity(intent);
+                //setContentView(R.layout.new_list);
+                //Button bNewReminder = (Button) findViewById(R.id.bNewReminder);
+                //bNewReminder.setOnClickListener(new View.OnClickListener() {
 
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(v.getContext(), Reminder.class);
-                        startActivity(intent);
-                    }
-                });
+                //    @Override
+                //    public void onClick(View v) {
+
+                //    }
+                //});
             }
         });
 
@@ -75,7 +76,7 @@ public class Templates extends Activity  {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 switch (s.getSelectedItem().toString()) {
                     case "Grocery List":
-                        Intent intent = new Intent(getApplicationContext(), GroceryTemplate.class);
+                        Intent intent = new Intent(getApplicationContext(), ViewListActivity.class);
                         startActivity(intent);
                         break;
                 }
