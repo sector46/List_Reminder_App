@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Set Date"
+        android:id="@+id/bDate"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="58dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Set Time"
+        android:id="@+id/bTime"
+        android:layout_below="@+id/bDate"
+        android:layout_alignRight="@+id/bDate"
+        android:layout_alignEnd="@+id/bDate"
+        android:layout_marginTop="61dp" />
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/sReminder"
+        android:layout_marginTop="103dp"
+        android:spinnerMode="dropdown"
+        android:layout_below="@+id/bTime"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignLeft="@+id/bTime"
+        android:layout_alignStart="@+id/bTime" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Repeat"
+        android:id="@+id/textView2"
+        android:layout_alignBottom="@+id/sReminder"
+        android:layout_toLeftOf="@+id/sReminder"
+        android:layout_toStartOf="@+id/sReminder"
+        android:layout_marginRight="39dp"
+        android:layout_marginEnd="39dp" />
+
+
+</RelativeLayout>
