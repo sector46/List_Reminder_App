@@ -24,6 +24,8 @@ import java.util.Calendar;
  * Created by chandhnikannatintavida on 2/14/16.
  */
 public class Reminder extends AppCompatActivity {
+    String date1,time1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,7 +82,11 @@ public class Reminder extends AppCompatActivity {
         bDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String name ="set";
                 Intent intent = new Intent(v.getContext(), ViewListActivity.class);
+                intent.putExtra("set",name);
+                intent.putExtra("time",time1);
+                intent.putExtra("date",date1);
                 startActivity(intent);
 
 
@@ -127,7 +133,7 @@ public class Reminder extends AppCompatActivity {
 
 
         public void populateSetDate(int year, int month, int day) {
-            String date1 = month + "/" + day + "/" + year;
+           date1 = month + "/" + day + "/" + year;
 //            TransferFragment.date.setText(month+"/"+day+"/"+year);
             TextView tvDate = (TextView) findViewById(R.id.tvDate);
             tvDate.setText(date1);
@@ -149,6 +155,7 @@ public class Reminder extends AppCompatActivity {
         public Dialog onCreateDialog(Bundle savedInstanceState){
             //Use the current time as the default values for the time picker
             final Calendar c = Calendar.getInstance();
+
             int hour = c.get(Calendar.HOUR_OF_DAY);
             int minute = c.get(Calendar.MINUTE);
 
@@ -165,6 +172,8 @@ public class Reminder extends AppCompatActivity {
             //Set a message for user
             TextView tv = (TextView) findViewById(R.id.tvTime);
             //Display the user changed time on TextView
+            time1 = String.valueOf(hourOfDay)+" : "
+                    + String.valueOf(minute);
             tv.setText(String.valueOf(hourOfDay)+" : "
                     + String.valueOf(minute));
         }

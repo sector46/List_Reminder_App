@@ -37,6 +37,7 @@ public class ViewListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_list);
+        Bundle xtra = getIntent().getExtras();
 
         doneButton             = (Button) findViewById(R.id.done_button);
         itemList               = (ListView) findViewById(R.id.item_list);
@@ -47,6 +48,12 @@ public class ViewListActivity extends AppCompatActivity {
         titleEditText          = (EditText) findViewById(R.id.title_edittext);
         addItemEditText        = (EditText) findViewById(R.id.add_item_edittext);
         reminderTextView       = (TextView) findViewById(R.id.reminder_textview);
+
+
+        if (xtra!=null)
+        {
+            reminderTextView.setText("Reminder set to \n"+xtra.getString("date")+" "+xtra.getString("time"));
+        }
 
         doneButton.setOnClickListener(new View.OnClickListener() {
             // enable/disable visibility on views depending on what mode the user is in

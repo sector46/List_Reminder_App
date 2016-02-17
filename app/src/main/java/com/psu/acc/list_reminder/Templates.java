@@ -59,11 +59,12 @@ public class Templates extends Activity  {
          */
 
         final String array_spinner[];
-        array_spinner = new String[3];
+        array_spinner = new String[4];
 
-        array_spinner[0] = "Grocery List";
-        array_spinner[1] = "Shopping List";
-        array_spinner[2] = "Pills list";
+        array_spinner[0] = "Select List";
+        array_spinner[1] = "Grocery List";
+        array_spinner[2] = "Shopping List";
+        array_spinner[3] = "Pills list";
 
 
         final Spinner s = (Spinner) findViewById(R.id.sUpdateList);
