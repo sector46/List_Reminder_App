@@ -13,15 +13,14 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
-    <Spinner
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/sUpdateList"
-        android:layout_below="@+id/tvExistinglist"
-        android:layout_centerHorizontal="true"
 
-        android:spinnerMode="dropdown"
-        />
+    <ListView
+        android:id="@+id/list"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_below="@+id/tvExistinglist"
+        android:layout_centerHorizontal="true">
+    </ListView>
 
 
     <TextView

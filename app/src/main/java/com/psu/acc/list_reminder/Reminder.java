@@ -31,9 +31,6 @@ public class Reminder extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.reminder);
 
-
-
-
         //repeat alarm...
         final String array_spinner[];
         array_spinner = new String[4];
@@ -70,8 +67,7 @@ public class Reminder extends AppCompatActivity {
         bTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent intent = new Intent(v.getContext(), Time_Picker.class);
-//                startActivity(intent);
+
                 DialogFragment newFragment = new TimePickerFragment();
                 newFragment.show(getFragmentManager(), "TimePicker");
 
@@ -124,6 +120,7 @@ public class Reminder extends AppCompatActivity {
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
+
             final Calendar calendar = Calendar.getInstance();
             int yy = calendar.get(Calendar.YEAR);
             int mm = calendar.get(Calendar.MONTH);
