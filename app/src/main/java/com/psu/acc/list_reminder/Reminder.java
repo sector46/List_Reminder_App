@@ -18,18 +18,27 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by chandhnikannatintavida on 2/14/16.
  */
 public class Reminder extends AppCompatActivity {
-    String date1,time1;
+    String date1;
+    String time1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.reminder);
+        Date date = new Date();
+        SimpleDateFormat ft = new SimpleDateFormat ("dd.MM.yyyy");
+        date1 = ft.format(date).toString();
+
+        SimpleDateFormat ft1 = new SimpleDateFormat ("hh:mm a");
+        time1 = ft1.format(date).toString();
 
         //repeat alarm...
         final String array_spinner[];
@@ -49,8 +58,9 @@ public class Reminder extends AppCompatActivity {
         TextView tvDate = (TextView) findViewById(R.id.tvDate);
         TextView tv = (TextView) findViewById(R.id.tvTime);
 
-        tvDate.setText("DD:MM:YY");
-        tv.setText("HH:MM");
+//        tvDate.setText("DD:MM:YY");
+        tvDate.setText(date1);
+        tv.setText(time1);
 
         // set date and time....
 
@@ -165,14 +175,24 @@ public class Reminder extends AppCompatActivity {
         public void onTimeSet(TimePicker view, int hourOfDay, int minute){
             //Do something with the user chosen time
             //Get reference of host activity (XML Layout File) TextView widget
+            String AMPM ="am";
+
+
+                if(hourOfDay>=12)
+                {
+                    hourOfDay=hourOfDay-12;
+                    AMPM = "pm";
+                } else {
+                    AMPM = "am";
+                }
 
             //Set a message for user
             TextView tv = (TextView) findViewById(R.id.tvTime);
             //Display the user changed time on TextView
             time1 = String.valueOf(hourOfDay)+" : "
-                    + String.valueOf(minute);
+                    + String.valueOf(minute)+" "+ AMPM;
             tv.setText(String.valueOf(hourOfDay)+" : "
-                    + String.valueOf(minute));
+                    + String.valueOf(minute)+" "+AMPM);
         }
     }
 

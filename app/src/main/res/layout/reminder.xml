@@ -63,7 +63,9 @@
         android:layout_alignStart="@+id/sReminder"
         android:layout_marginLeft="51dp"
         android:layout_marginStart="51dp"
-        android:layout_alignTop="@+id/bDate" />
+        android:layout_alignTop="@+id/bDate"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -73,7 +75,8 @@
         android:id="@+id/tvTime"
         android:layout_alignTop="@+id/bTime"
         android:layout_alignLeft="@+id/tvDate"
-        android:layout_alignStart="@+id/tvDate" />
+        android:layout_alignStart="@+id/tvDate"
+        />
 
     <Button
         android:layout_width="wrap_content"
