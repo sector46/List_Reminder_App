@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar">
+    android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar"
+    android:background="#6cf1d70c">
 
     <LinearLayout
         android:orientation="horizontal"

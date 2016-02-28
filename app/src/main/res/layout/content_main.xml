@@ -13,7 +13,8 @@
     tools:showIn="@layout/activity_main"
     tools:context="com.psu.acc.list_reminder.MainActivity"
     android:outlineProvider="background"
-    android:theme="@style/AppTheme">
+    android:theme="@style/AppTheme"
+    android:background="#6cf1d70c">
 
     <TextView
         android:layout_width="wrap_content"
