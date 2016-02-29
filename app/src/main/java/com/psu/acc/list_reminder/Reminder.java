@@ -1,11 +1,13 @@
 package com.psu.acc.list_reminder;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -29,7 +31,7 @@ import java.util.Date;
  */
 public class Reminder extends AppCompatActivity {
     String date1;
-    static String time1;
+    String time1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +40,7 @@ public class Reminder extends AppCompatActivity {
         Date date = new Date();
         SimpleDateFormat ft = new SimpleDateFormat ("dd.MM.yyyy");
         date1 = ft.format(date).toString();
+
 
         SimpleDateFormat ft1 = new SimpleDateFormat ("hh:mm a");
         time1 = ft1.format(date).toString();
@@ -144,10 +147,28 @@ public class Reminder extends AppCompatActivity {
 
 
         public void populateSetDate(int year, int month, int day) {
-            date1 = month + "/" + day + "/" + year;
-//            TransferFragment.date.setText(month+"/"+day+"/"+year);
+
+            String datenow =date1;
+            date1 = month + "." + day + "." + year;
+            if(date1.compareTo(datenow)<0){
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("Warning!");
+                builder.setMessage("The date you selected is a past date.Please select the current date or a future one.!")
+                        .setCancelable(false)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                //do things
+                            }
+                        });
+                AlertDialog alert = builder.create();
+                alert.show();
+
+            }
+            else{
+
             TextView tvDate = (TextView) findViewById(R.id.tvDate);
             tvDate.setText(date1);
+            }
         }
 
         @Override
