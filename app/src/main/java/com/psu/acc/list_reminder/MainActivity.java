@@ -128,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
         displayExistingLists();
     }
 
+    //Display existing lists on the MainActivity page
     private void displayExistingLists(){
         List<String> existingLists = databaseHelper.getAllListNames();
 
