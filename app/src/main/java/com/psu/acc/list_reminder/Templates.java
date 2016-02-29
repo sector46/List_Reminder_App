@@ -11,11 +11,15 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
+import java.util.List;
+
 /**
  * Created by chandhnikannatintavida on 2/14/16.
  */
 public class Templates extends AppCompatActivity {
     ListView list;
+    private DatabaseHelper databaseHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,14 +28,12 @@ public class Templates extends AppCompatActivity {
         // Get ListView object from xml
         list = (ListView) findViewById(R.id.list);
 
-        // Defined Array values to show in ListView
-        String[] values = new String[] { "Grocery List",
-                "Christmas shopping list",
-                "Pills"
-        };
+        // Show previously created lists in ListView
+        databaseHelper = DatabaseHelper.getInstance(Templates.this);
+        List<String> existingLists = databaseHelper.getAllListNames();
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, android.R.id.text1, values);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_list_item_1, android.R.id.text1, existingLists);
 
         // Assign adapter to ListView
         list.setAdapter(adapter);
@@ -60,13 +62,11 @@ public class Templates extends AppCompatActivity {
         if the user selects new list display a custom list which is blank
          */
         Button bNewList =(Button) findViewById(R.id.bNewList);
-        bNewList.setOnClickListener(new View.OnClickListener()
-        {
+        bNewList.setOnClickListener(new View.OnClickListener() {
 
             @Override
-            public void onClick(View v)
-            {
-                    //display a new list....
+            public void onClick(View v) {
+                //display a new list....
                 Intent intent = new Intent(v.getContext(), ViewListActivity.class);
                 startActivity(intent);
 
