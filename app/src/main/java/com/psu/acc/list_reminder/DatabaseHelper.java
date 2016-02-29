@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.lang.String;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -103,7 +104,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // Looping through all rows and adding to list
         if (listsCursor.moveToFirst()) {
             do {
-                String listName = listsCursor.getString(0);
+                String listName = listsCursor.getString(0).replaceAll("_", " ");
                 // Adding list_name to the list.
                 lists.add(listName);
             } while (listsCursor.moveToNext());
@@ -114,16 +115,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     /**
      * Add a list to the database.
-     * NOTE: This removes spaces in the list_name before insertion to database.
-     * Therefore, lists when displayed later will be missing spaces.
+     * NOTE: Spaces in the list_name are replaced by underscore before insertion to database.
      * @param listObject listObject populated with all its fields.
      */
     public void addList(ListObject listObject) {
         SQLiteDatabase db = this.getWritableDatabase();
-
+        String listName = listObject.getListName().replaceAll(" ", "_");
         // Insert list info into the lists_table (all info except list items)
         ContentValues listValues = new ContentValues();
-        listValues.put(LIST_NAME, listObject.getListName().replaceAll("\\s", "")); // List name
+        listValues.put(LIST_NAME, listName); // List name
         listValues.put(REMINDER, listObject.getReminderDateTime()); // Reminder for list
         listValues.put(REMINDER_RECURRENCE, listObject.getReminderRecurrence()); // Recurrence for the reminder
         listValues.put(REMINDER_ENABLED, listObject.getReminderEnabled()); // If reminder is enabled.
@@ -131,9 +131,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.insert(LISTS_TABLE, null, listValues);
 
         //Create a table with the listname to store item name and if its done/struck off (value: true) or incomplete (also, default value: false)
-        String LIST_TABLE = listObject.getListName().replaceAll("\\s","");
         // SQL statement to create list table to store items on the list.
-        String CREATE_NEW_LIST_TABLE = "CREATE TABLE " + LIST_TABLE +
+        String CREATE_NEW_LIST_TABLE = "CREATE TABLE " + listName +
                 " ( " + ITEM_NAME + " TEXT PRIMARY KEY, " +
                 ITEM_STATUS + " TEXT)";
 
@@ -146,7 +145,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             ContentValues ITEM_VALUES = new ContentValues();
             ITEM_VALUES.put(ITEM_NAME, key); // Item name
             ITEM_VALUES.put(ITEM_STATUS, value); // Item status
-            db.insert(LIST_TABLE, null, ITEM_VALUES);
+            db.insert(listName, null, ITEM_VALUES);
         }
     }
 
@@ -164,9 +163,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * @param listName name of the list to be removed
      */
     public void removeList(String listName) {
+        listName = listName.replaceAll(" ","_");
         SQLiteDatabase db = this.getWritableDatabase();
         //Delete list table containing all the items on that list.
-        db.execSQL("DROP TABLE IF EXISTS " + listName.replaceAll("\\s",""));
+        db.execSQL("DROP TABLE IF EXISTS " + listName);
         //Remove row from lists table for this list.
         db.delete(LISTS_TABLE, LIST_NAME + "= ?", new String[] { listName } );
     }
@@ -178,7 +178,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
     public void removeItemFromList(String listName, String itemName) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(listName.replaceAll("\\s",""), ITEM_NAME + "= ?", new String[]{itemName});
+        db.delete(listName.replaceAll(" ","_"), ITEM_NAME + "= ?", new String[]{itemName});
     }
 
     /**
@@ -187,17 +187,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
     public void updateList(ListObject listObject) {
         //Remove the list from the database and create it again with the new listObject
-        removeList(listObject.getListName().replaceAll("\\s",""));
+        removeList(listObject.getListName());
         addList(listObject);
     }
 
     /**
-     * Display an already created list.
-     * @param listName name of the list.
+     * Get an already created list.
+     * Replaces underscore from list name back to a space before displaying the list to the user
+     * @param listName name of the list (including spaces).
      * @return the listObject based on values in the database for that list.
      */
-    public ListObject displayList(String listName) {
+    public ListObject getList(String listName) {
         SQLiteDatabase db = this.getWritableDatabase();
+        listName = listName.replaceAll(" ", "_");
         Cursor listCursor = db.query(LISTS_TABLE, LISTS_TABLE_COLUMNS, LIST_NAME + " = ?", new String[]{listName}, null, null, null, null);
 
         /* if we got results get the first one; otherwise, return null */
@@ -207,7 +209,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         /* Build a list object based on results for that list */
         ListObject listObject = new ListObject();
-        listObject.setListName(listCursor.getString(0));
+        String listNameFromDB = listCursor.getString(0);
+        listObject.setListName(listNameFromDB.replaceAll("_", " "));
         listObject.setReminderDateTime(listCursor.getString(1));
         listObject.setReminderRecurrence(listCursor.getString(2));
         listObject.setReminderEnabled(listCursor.getString(3));
