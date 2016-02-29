@@ -5,10 +5,12 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.DateFormat;
+import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,7 +29,7 @@ import java.util.Date;
  */
 public class Reminder extends AppCompatActivity {
     String date1;
-    String time1;
+    static String time1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,8 +80,8 @@ public class Reminder extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                DialogFragment newFragment = new TimePickerFragment();
-                newFragment.show(getFragmentManager(), "TimePicker");
+                DialogHandler newFragment = new DialogHandler(getApplicationContext());
+                newFragment.show(getFragmentManager() , "time_Picker");
 
             }
         });
@@ -140,7 +142,7 @@ public class Reminder extends AppCompatActivity {
 
 
         public void populateSetDate(int year, int month, int day) {
-           date1 = month + "/" + day + "/" + year;
+            date1 = month + "/" + day + "/" + year;
 //            TransferFragment.date.setText(month+"/"+day+"/"+year);
             TextView tvDate = (TextView) findViewById(R.id.tvDate);
             tvDate.setText(date1);
@@ -155,45 +157,50 @@ public class Reminder extends AppCompatActivity {
         }
     }
 
-    @SuppressLint("ValidFragment")
-    public class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener{
+    public class DialogHandler extends DialogFragment
+            implements TimePickerDialog.OnTimeSetListener {
+        Context context;
 
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState){
-            //Use the current time as the default values for the time picker
-            final Calendar c = Calendar.getInstance();
+        public DialogHandler(Context context){
+            this.context=context;
 
-            int hour = c.get(Calendar.HOUR_OF_DAY);
-            int minute = c.get(Calendar.MINUTE);
-
-            //Create and return a new instance of TimePickerDialog
-            return new TimePickerDialog(getActivity(),this, hour, minute,
-                    DateFormat.is24HourFormat(getActivity()));
         }
 
-        //onTimeSet() callback method
-        public void onTimeSet(TimePicker view, int hourOfDay, int minute){
-            //Do something with the user chosen time
-            //Get reference of host activity (XML Layout File) TextView widget
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the current time as the default values for the picker
+            final Calendar c = Calendar.getInstance();
+            int hour = c.get(Calendar.HOUR_OF_DAY);
+            int minute = c.get(Calendar.MINUTE);
+            TimePickerDialog dialog= new TimePickerDialog(new ContextThemeWrapper(getActivity(),R.style.Dialog), this, hour, minute, DateFormat.is24HourFormat(getActivity()));
+            // Create a new instance of TimePickerDialog and return it
+            return dialog;
+        }
+
+        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+            // Do something with the time chosen by the user
+
             String AMPM ="am";
 
 
-                if(hourOfDay>=12)
-                {
-                    hourOfDay=hourOfDay-12;
-                    AMPM = "pm";
-                } else {
-                    AMPM = "am";
-                }
+            if(hourOfDay>=12)
+            {
+                hourOfDay=hourOfDay-12;
+                AMPM = "pm";
+            } else {
+                AMPM = "am";
+            }
 
             //Set a message for user
             TextView tv = (TextView) findViewById(R.id.tvTime);
             //Display the user changed time on TextView
             time1 = String.valueOf(hourOfDay)+" : "
                     + String.valueOf(minute)+" "+ AMPM;
-            tv.setText(String.valueOf(hourOfDay)+" : "
-                    + String.valueOf(minute)+" "+AMPM);
+            tv.setText(String.valueOf(hourOfDay) + " : "
+                    + String.valueOf(minute) + " " + AMPM);
         }
     }
+
+
 
 }
