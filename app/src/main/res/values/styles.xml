@@ -6,7 +6,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:datePickerDialogTheme" tools:targetApi="lollipop">@style/MyDatePickerDialogTheme</item>
+
 
 
     </style>
@@ -17,20 +17,19 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-    <style name="MyDatePickerDialogTheme" parent="android:Theme.Material.Light.Dialog" tools:targetApi="lollipop">
-        <item name="android:datePickerStyle">@style/MyDatePickerStyle</item>
-
-    </style>
-    <style name="MyDatePickerStyle" parent="@android:style/Widget.Material.Light.DatePicker" tools:targetApi="lollipop">
-        <item name="android:headerBackground">@color/chosen_header_bg_color</item>
-        <item name="android:selectableItemBackground">@color/selectable_item_bg</item>
-        <item name="android:focusedMonthDateColor">@color/chosen_header_bg_color</item>
-    </style>
 
     <style name="Dialog" parent="Base.Theme.AppCompat.Dialog">
         <item name="android:timePickerDialogTheme" tools:targetApi="lollipop">@style/AppTheme2</item>
     </style>
     <style name="AppTheme2" parent="AppTheme">
+        <item name="android:headerBackground">@color/chosen_header_bg_color</item>
+        <item name="android:windowIsFloating">true</item>
+    </style>
+
+    <style name="Dialog1" parent="Base.Theme.AppCompat.Dialog">
+        <item name="android:datePickerDialogTheme" tools:targetApi="lollipop">@style/AppTheme3</item>
+    </style>
+    <style name="AppTheme3" parent="AppTheme">
         <item name="android:headerBackground">@color/chosen_header_bg_color</item>
         <item name="android:windowIsFloating">true</item>
     </style>

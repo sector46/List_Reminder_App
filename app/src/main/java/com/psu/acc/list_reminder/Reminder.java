@@ -137,7 +137,9 @@ public class Reminder extends AppCompatActivity {
             int yy = calendar.get(Calendar.YEAR);
             int mm = calendar.get(Calendar.MONTH);
             int dd = calendar.get(Calendar.DAY_OF_MONTH);
-            return new DatePickerDialog(getActivity(), this, yy, mm, dd);
+           // return new DatePickerDialog(getActivity(), this, yy, mm, dd);
+            DatePickerDialog dialog= new DatePickerDialog((new ContextThemeWrapper(getActivity(),R.style.Dialog1)), this, yy, mm,dd);
+            return dialog;
         }
 
 
@@ -157,6 +159,7 @@ public class Reminder extends AppCompatActivity {
         }
     }
 
+    @SuppressLint("ValidFragment")
     public class DialogHandler extends DialogFragment
             implements TimePickerDialog.OnTimeSetListener {
         Context context;
