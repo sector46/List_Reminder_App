@@ -34,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+
         Button bAddList =(Button) findViewById(R.id.bAddList);
 
         bAddList.setOnClickListener(new View.OnClickListener() {

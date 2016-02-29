@@ -1,8 +1,8 @@
 package com.psu.acc.list_reminder;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,7 +14,7 @@ import android.widget.ListView;
 /**
  * Created by chandhnikannatintavida on 2/14/16.
  */
-public class Templates extends Activity  {
+public class Templates extends AppCompatActivity {
     ListView list;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
