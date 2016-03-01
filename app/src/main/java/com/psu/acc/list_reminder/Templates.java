@@ -48,9 +48,10 @@ public class Templates extends AppCompatActivity {
                 // ListView Clicked item value
                 String  itemValue    = (String) list.getItemAtPosition(position);
                 switch (itemValue) {
-                    case "Grocery List":
+                    case "Garage Sale":
                         Intent intent = new Intent(getApplicationContext(), ViewListActivity.class);
                         startActivity(intent);
+                        finish();
                         break;
                 }
 
@@ -69,6 +70,7 @@ public class Templates extends AppCompatActivity {
                 //display a new list....
                 Intent intent = new Intent(v.getContext(), ViewListActivity.class);
                 startActivity(intent);
+                finish();
 
             }
         });

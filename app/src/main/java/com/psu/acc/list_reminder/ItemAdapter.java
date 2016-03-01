@@ -1,23 +1,18 @@
 package com.psu.acc.list_reminder;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Paint;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 /**
  * Created by caseybowman on 2/28/16.

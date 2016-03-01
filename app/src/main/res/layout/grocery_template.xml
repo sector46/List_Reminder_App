@@ -3,14 +3,152 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar"
-    android:background="@color/yellow">
+    android:background="#6cf1d70c">
 
-    <Button
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Set Reminder"
-        android:id="@+id/bReminder"
         android:layout_gravity="center_horizontal"
-        android:background="@drawable/layer_list"
-        android:textColor="#ffffff"/>
+        android:layout_weight="0.1">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="0.2"></LinearLayout>
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/title_edittext"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:text="@string/default_list_name"
+            android:layout_weight="0.6"
+            android:textSize="35dp"
+            android:inputType="text" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/edit_title_button"
+            android:layout_weight="0.15"
+            android:layout_gravity="center_vertical|top"
+            android:src="@drawable/edit_property"
+            android:scaleX="0.8"
+            android:scaleY="0.8"
+            android:background="@color/transparent" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.1">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/reminder_textview"
+            android:id="@+id/reminder_textview"
+            android:layout_weight="0.9"
+            android:textSize="20dp"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:textColor="#000000" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/edit_reminder_button"
+            android:layout_weight="0.15"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/edit_property"
+            android:scaleX="0.5"
+            android:scaleY="0.5"
+            android:background="@color/transparent" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:id="@+id/enable_reminder_checkbox"
+            android:layout_weight="0.15"
+            android:singleLine="false"
+            android:textAlignment="inherit"
+            android:checked="false"
+            android:scaleX="1.5"
+            android:scaleY="1.5"
+            android:layout_gravity="center_vertical" />
+
+    </LinearLayout>
+
+    <ListView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/item_list"
+        android:layout_weight="0.7"
+        android:entries="@array/grocery_list_array" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="0.1" >
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/add_item_edittext"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:layout_weight="0.6"
+            android:textSize="20dp"
+            android:inputType="text"
+            android:textAlignment="textStart"
+            android:singleLine="true"
+            android:hint="@string/add_item" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/add_item_confirmation_button"
+            android:layout_weight="0.15"
+            android:layout_gravity="center_vertical|top"
+            android:src="@drawable/check_mark"
+            android:scaleX="0.4"
+            android:scaleY="0.4"
+            android:background="@color/transparent" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.05">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="0.2" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/done_button"
+            android:id="@+id/done_button"
+            android:layout_weight="0.2"
+            android:background="@drawable/layer_list"
+            android:textColor="#ffffff"/>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="0.2"></LinearLayout>
+    </LinearLayout>
 </LinearLayout>

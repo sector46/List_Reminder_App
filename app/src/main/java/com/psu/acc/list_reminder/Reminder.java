@@ -99,6 +99,7 @@ public class Reminder extends AppCompatActivity {
                 intent.putExtra("time",time1);
                 intent.putExtra("date",date1);
                 startActivity(intent);
+                finish();
 
 
             }
