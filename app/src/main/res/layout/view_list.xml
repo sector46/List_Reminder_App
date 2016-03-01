@@ -12,33 +12,16 @@
         android:layout_gravity="center_horizontal"
         android:layout_weight="0.1">
 
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="0.2"></LinearLayout>
-
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/title_edittext"
             android:layout_gravity="center_horizontal"
             android:gravity="center_horizontal"
-            android:text="@string/default_list_name"
             android:layout_weight="0.6"
             android:textSize="35dp"
-            android:inputType="text" />
-
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/edit_title_button"
-            android:layout_weight="0.15"
-            android:layout_gravity="center_vertical|top"
-            android:src="@drawable/edit_property"
-            android:scaleX="0.8"
-            android:scaleY="0.8"
-            android:background="@color/transparent" />
+            android:inputType="text"
+            android:hint="@string/default_list_name" />
 
     </LinearLayout>
 
@@ -89,8 +72,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/item_list"
-        android:layout_weight="0.7"
-        android:entries="@array/grocery_list_array" />
+        android:layout_weight="0.7" />
 
     <LinearLayout
         android:orientation="horizontal"

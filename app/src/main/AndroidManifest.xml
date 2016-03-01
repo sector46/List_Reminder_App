@@ -21,7 +21,9 @@
 
         <activity android:name=".Templates"/>
         <activity android:name=".Reminder"/>
-        <activity android:name=".ViewListActivity"/>
+        <activity
+            android:name=".ViewListActivity">
+        </activity>
     </application>
 
 </manifest>
