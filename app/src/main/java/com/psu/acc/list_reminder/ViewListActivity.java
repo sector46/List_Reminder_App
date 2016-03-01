@@ -13,9 +13,12 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by caseybowman on 2/13/16.
@@ -24,7 +27,7 @@ public class ViewListActivity extends Activity {
 
 
     private Button doneButton;
-    private ListView itemList;
+    private ListView listView;
     private ArrayAdapter<LinearLayout> listAdapter;
     private ImageButton editReminderButton;
     private ImageButton addItemConfirmationButton;
@@ -33,7 +36,8 @@ public class ViewListActivity extends Activity {
     private EditText addItemEditText;
     private TextView reminderTextView;
 
-    boolean editMode = true;
+    private boolean editMode = true;
+    private ItemAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +46,7 @@ public class ViewListActivity extends Activity {
         Bundle xtra = getIntent().getExtras();
 
         doneButton             = (Button) findViewById(R.id.done_button);
-        itemList               = (ListView) findViewById(R.id.item_list);
+        listView               = (ListView) findViewById(R.id.item_list);
         editReminderButton     = (ImageButton) findViewById(R.id.edit_reminder_button);
         addItemConfirmationButton = (ImageButton) findViewById(R.id.add_item_confirmation_button);
         enableReminderCheckBox = (CheckBox) findViewById(R.id.enable_reminder_checkbox);
@@ -50,11 +54,32 @@ public class ViewListActivity extends Activity {
         addItemEditText        = (EditText) findViewById(R.id.add_item_edittext);
         reminderTextView       = (TextView) findViewById(R.id.reminder_textview);
 
-        ArrayList<String> list = new ArrayList<String>();
-        list.add("data1");
-        list.add("data2");
+        /***** Object Creation *****/
+        String name = "Test List";
+        HashMap<String, String> items = new HashMap<String, String>();
+        items.put("Milk", "false");
+        items.put("Eggs", "false");
+        items.put("Bananas", "false");
+        items.put("Bread", "false");
+        String reminderDateTime = "03.01.2016 12:45 AM";
+        String reminderRecurrence = "Daily";
+        String reminderEnabled = "true";
+        /***** Object Creation *****/
 
-        itemList.setAdapter(new ItemAdapter(this, itemList, list));
+        ListObject list = new ListObject(name, items, reminderDateTime, reminderRecurrence, reminderEnabled);
+
+        titleEditText.setText(list.getListName());
+        reminderTextView.setText(list.getReminderDateTime());
+        if (list.getReminderEnabled() == "true") {
+            enableReminderCheckBox.setChecked(true);
+        } else {
+            enableReminderCheckBox.setChecked(false);
+        }
+        ArrayList<String> itemNames = new ArrayList<String>(list.getListItems().keySet());
+        ArrayList<String> strike = new ArrayList<String>(list.getListItems().values());
+
+        adapter = new ItemAdapter(this, itemNames, strike);
+        listView.setAdapter(adapter);  //new ItemAdapter(this, itemList, list));
 
         if (xtra!=null)
         {
@@ -69,6 +94,7 @@ public class ViewListActivity extends Activity {
             @Override
             public void onClick(View view) {
                 if (editMode == true) {
+                    adapter.setInvisible(listView);
                     editReminderButton.setVisibility(View.INVISIBLE);
                     addItemConfirmationButton.setVisibility(View.INVISIBLE);
                     enableReminderCheckBox.setVisibility(View.INVISIBLE);
@@ -80,6 +106,7 @@ public class ViewListActivity extends Activity {
                     }
                     editMode = false;
                 } else {
+                    adapter.setVisible(listView);
                     editReminderButton.setVisibility(View.VISIBLE);
                     addItemConfirmationButton.setVisibility(View.VISIBLE);
                     enableReminderCheckBox.setVisibility(View.VISIBLE);
@@ -100,5 +127,7 @@ public class ViewListActivity extends Activity {
             }
         });
     }
+
+
 
 }

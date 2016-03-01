@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar"
-    android:background="#6cf1d70c">
+    android:background="@color/yellow">
 
 
     <TextView

@@ -17,6 +17,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * Created by caseybowman on 2/28/16.
@@ -25,14 +26,14 @@ public class ItemAdapter extends BaseAdapter {
 
     Context context;
     ArrayList<String> data;
-    ListView listView;
+    ArrayList<String> strike;
     private static LayoutInflater inflater = null;
 
-    public ItemAdapter(Context context, ListView listView, ArrayList<String> data) {
+    public ItemAdapter(Context context, ArrayList<String> data, ArrayList<String> strike) {
         // TODO Auto-generated constructor stub
         this.context = context;
         this.data = data;
-        this.listView = listView;
+        this.strike = strike;
         inflater = (LayoutInflater) context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -67,8 +68,15 @@ public class ItemAdapter extends BaseAdapter {
         relLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                relLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.gray));
-                text.setPaintFlags(text.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                if (strike.get(position) == "false") {
+                    relLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.gray));
+                    text.setPaintFlags(text.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                    strike.set(position, "true");
+                } else {
+                    relLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.yellow));
+                    text.setPaintFlags(text.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+                    strike.set(position, "false");
+                }
             }
         });
         final ImageButton deleteItemButton = (ImageButton) vi.findViewById(R.id.delete_item_button);
@@ -77,6 +85,7 @@ public class ItemAdapter extends BaseAdapter {
             @Override
             public void onClick(View view) {
                 data.remove(position);
+                strike.remove(position);
                 notifyDataSetChanged();
             }
         });
@@ -86,4 +95,27 @@ public class ItemAdapter extends BaseAdapter {
     public void addItem(String name) {
         data.add(name);
     }
+
+    public void setVisible(ListView listView) {
+        int listLength = getCount();
+        RelativeLayout view;
+        ImageButton button;
+        for (int i=0; i<listLength; i++) {
+            view = (RelativeLayout) listView.getChildAt(i);
+            button = (ImageButton) view.findViewById(R.id.delete_item_button);
+            button.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public void setInvisible(ListView listView) {
+        int listLength = getCount();
+        RelativeLayout view;
+        ImageButton button;
+        for (int i=0; i<listLength; i++) {
+            view = (RelativeLayout) listView.getChildAt(i);
+            button = (ImageButton) view.findViewById(R.id.delete_item_button);
+            button.setVisibility(View.INVISIBLE);
+        }
+    }
+
 }
