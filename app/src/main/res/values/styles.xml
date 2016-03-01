@@ -6,9 +6,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-
-
-
+        <item name="android:textViewStyle">@style/RobotoTextViewStyle</item>
     </style>
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
@@ -32,6 +30,10 @@
     <style name="AppTheme3" parent="AppTheme">
         <item name="android:headerBackground">@color/chosen_header_bg_color</item>
         <item name="android:windowIsFloating">true</item>
+    </style>
+    <style name="RobotoTextViewStyle" parent="android:Widget.TextView">
+        <item name="android:fontFamily" tools:targetApi="jelly_bean">serif</item>
+        <item name="android:textColor" tools:targetApi="jelly_bean">#000000</item>
     </style>
 
 

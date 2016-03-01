@@ -141,7 +141,9 @@
             android:layout_height="wrap_content"
             android:text="@string/done_button"
             android:id="@+id/done_button"
-            android:layout_weight="0.2" />
+            android:layout_weight="0.2"
+            android:background="@drawable/layer_list"
+            android:textColor="#ffffff"/>
 
         <LinearLayout
             android:orientation="horizontal"

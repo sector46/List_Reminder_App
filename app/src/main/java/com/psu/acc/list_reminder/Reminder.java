@@ -196,7 +196,8 @@ public class Reminder extends AppCompatActivity {
             final Calendar c = Calendar.getInstance();
             int hour = c.get(Calendar.HOUR_OF_DAY);
             int minute = c.get(Calendar.MINUTE);
-            TimePickerDialog dialog= new TimePickerDialog(new ContextThemeWrapper(getActivity(),R.style.Dialog), this, hour, minute, DateFormat.is24HourFormat(getActivity()));
+
+            TimePickerDialog dialog= new TimePickerDialog(new ContextThemeWrapper(getActivity(),R.style.Dialog), this, hour, minute,DateFormat.is24HourFormat(getActivity()));
             // Create a new instance of TimePickerDialog and return it
             return dialog;
         }
@@ -205,23 +206,33 @@ public class Reminder extends AppCompatActivity {
             // Do something with the time chosen by the user
 
             String AMPM ="am";
-
+            String min;
 
             if(hourOfDay>=12)
             {
-                hourOfDay=hourOfDay-12;
                 AMPM = "pm";
+
             } else {
+
                 AMPM = "am";
+                if(hourOfDay==0)
+                    hourOfDay=12;
+            }
+            if(minute<10){
+                min= "0"+minute;
+            }
+            else
+            {
+               min =String.valueOf(minute);
             }
 
             //Set a message for user
             TextView tv = (TextView) findViewById(R.id.tvTime);
             //Display the user changed time on TextView
             time1 = String.valueOf(hourOfDay)+" : "
-                    + String.valueOf(minute)+" "+ AMPM;
+                    + min+" "+ AMPM;
             tv.setText(String.valueOf(hourOfDay) + " : "
-                    + String.valueOf(minute) + " " + AMPM);
+                    + min + " " + AMPM);
         }
     }
 

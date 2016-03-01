@@ -10,5 +10,7 @@
         android:layout_height="wrap_content"
         android:text="Set Reminder"
         android:id="@+id/bReminder"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/layer_list"
+        android:textColor="#ffffff"/>
 </LinearLayout>

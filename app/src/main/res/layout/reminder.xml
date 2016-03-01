@@ -16,7 +16,9 @@
         android:layout_marginTop="86dp"
         android:layout_alignParentTop="true"
         android:layout_toLeftOf="@+id/sReminder"
-        android:layout_toStartOf="@+id/sReminder" />
+        android:layout_toStartOf="@+id/sReminder"
+        android:background="@drawable/layer_list"
+        android:textColor="#ffffff"/>
 
 
     <Button
@@ -28,7 +30,9 @@
         android:layout_marginTop="45dp"
         android:layout_below="@+id/bDate"
         android:layout_alignLeft="@+id/textView2"
-        android:layout_alignStart="@+id/textView2" />
+        android:layout_alignStart="@+id/textView2"
+        android:background="@drawable/layer_list"
+        android:textColor="#ffffff"/>
 
     <Spinner
         android:layout_width="wrap_content"
@@ -87,7 +91,9 @@
         android:id="@+id/bDone"
         android:layout_below="@+id/sReminder"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="49dp" />
+        android:layout_marginTop="49dp"
+        android:background="@drawable/layer_list"
+        android:textColor="#ffffff"/>
 
 
 </RelativeLayout>

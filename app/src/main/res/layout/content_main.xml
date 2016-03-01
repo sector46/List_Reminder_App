@@ -23,7 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="List Reminder"
+        android:text="List 4 Later"
         android:id="@+id/textView"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
@@ -37,8 +37,11 @@
         android:paddingTop="10dip"
         android:paddingBottom="10dip"
         android:text="Add List"
+
         android:layout_below="@+id/textView"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/layer_list"
+        android:textColor="#ffffff"/>
 
     <ListView
         android:layout_width="wrap_content"
