@@ -12,7 +12,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -59,7 +58,8 @@ public class ViewListActivity extends Activity {
 
         if (xtra!=null)
         {
-            reminderTextView.setText("Reminder set to \n"+xtra.getString("date")+" "+xtra.getString("time"));
+            //reminderTextView.setText("Reminder set to \n"+xtra.getString("date")+" "+xtra.getString("time"));
+            reminderTextView.setText(xtra.getString("date")+" "+xtra.getString("time"));
         }
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);

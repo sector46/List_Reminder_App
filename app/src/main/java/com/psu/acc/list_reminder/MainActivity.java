@@ -1,31 +1,35 @@
 package com.psu.acc.list_reminder;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
     private ListView existingListsView;
+    private DatabaseHelper databaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
 
        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -35,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+
         Button bAddList =(Button) findViewById(R.id.bAddList);
 
         bAddList.setOnClickListener(new View.OnClickListener() {
@@ -46,19 +52,87 @@ public class MainActivity extends AppCompatActivity {
         });
 
         existingListsView = (ListView)findViewById(R.id.existingListsView);
+
+        //Testing the DatabaseHelper methods. (to be removed after integration)
+        databaseHelper = DatabaseHelper.getInstance(MainActivity.this);
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+
+        //Display existing lists, and remove all initially
+        List<String> existingLists = databaseHelper.getAllListNames();
+        System.out.println("Lists so far: (then remove them all)");
+        for (String listName : existingLists){
+            System.out.println("\t" + listName);
+            databaseHelper.removeList(listName);
+        }
+        databaseHelper.dropListsTable();
+
+        //Create lists_table and three new lists.
+        // onCreate method to be called only if you hadn't dropped the lists table (like line 67)
+        databaseHelper.onCreate(db);
+        HashMap<String, String> items = new HashMap<>();
+        items.put("Egg", "false");
+        items.put("Milk", "false");
+        items.put("Bread", "false");
+        items.put("Banana", "false");
+        ListObject listObject1 = new ListObject("Grocery List", items, "March 12, 2016 10:00 am", "weekly", "true");
+        databaseHelper.addList(listObject1);
+        items = new HashMap<>();
+        items.put("Chairs", "false");
+        items.put("Dining table", "false");
+        items.put("Mattress", "false");
+        items.put("Coffee table", "false");
+        ListObject listObject2 = new ListObject("Garage Sale", items, "March 20, 2016 7:00 pm", "none", "true");
+        databaseHelper.addList(listObject2);
+        items = new HashMap<>();
+        items.put("Tees", "false");
+        items.put("Boots", "false");
+        items.put("Skateboard", "false");
+        ListObject listObject3 = new ListObject("Thanksgiving Shopping", items, "Nov 15, 2016 5:00 pm", "none", "true");
+        databaseHelper.addList(listObject3);
+
+        //Display newly created list names
+        existingLists = databaseHelper.getAllListNames();
+        System.out.println("Created 3 new lists:");
+        for (String listName : existingLists){
+            System.out.println("\t" + listName);
+        }
+
+        //Retrieve a list and display its attributes.
+        System.out.println("Displaying Garage Sale List");
+        ListObject aList = databaseHelper.getList("Garage Sale");
+        aList.displayList();
+        //Removes item Dining table from list and display it
+        System.out.println("Remove item Dining table from Garage Sale");
+        databaseHelper.removeItemFromList("Garage Sale", "Dining table");
+        aList = databaseHelper.getList("Garage Sale");
+        System.out.println("Updated Garage Sale List");
+        aList.displayList();
+        //Remove Grocery List
+        System.out.println("Remove Grocery List");
+        databaseHelper.removeList("Grocery List");
+
+        //Update Thanksgiving Shopping, strike off boots (change value from false to true), and add new item 'Home theatre'
+        aList = databaseHelper.getList("Thanksgiving Shopping");
+        System.out.println("Original Thanksgiving Shopping List");
+        aList.displayList();
+        Map<String, String> itemsList3 = aList.getListItems();
+        itemsList3.put("Home theatre", "false");
+        itemsList3.put("Boots", "true");
+        aList.setListItems(itemsList3);
+        //Update list in the database, removes old one and creates a new one with the same name.
+        databaseHelper.updateList(aList);
+        System.out.println("Updated Thanksgiving Shopping");
+        aList = databaseHelper.getList("Thanksgiving Shopping");
+        aList.displayList();
+
         displayExistingLists();
     }
 
+    //Display existing lists on the MainActivity page
     private void displayExistingLists(){
+        List<String> existingLists = databaseHelper.getAllListNames();
 
-        // TODO: this arraylist should be initialized with the lists that are already created.
-        List<String> existingLists = new ArrayList<>();
-        existingLists.add("Grocery List");
-        existingLists.add("Pills List");
-        existingLists.add("Christmas shopping");
-
-        ArrayAdapter adapter = new ArrayAdapter(MainActivity.this, android.R.layout.simple_list_item_1,existingLists);
-
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, android.R.id.text1, existingLists);
         existingListsView.setAdapter(adapter);
     }
 

@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar"
+    android:background="#6cf1d70c">
 
     <Button
         android:layout_width="wrap_content"
@@ -11,17 +13,18 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="61dp"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
-
-    <Spinner
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/sUpdateList"
-        android:layout_below="@+id/tvExistinglist"
         android:layout_centerHorizontal="true"
+        android:background="@drawable/layer_list"
+        android:textColor="#ffffff"/>
 
-        android:spinnerMode="dropdown"
-        />
+
+    <ListView
+        android:id="@+id/list"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_below="@+id/tvExistinglist"
+        android:layout_centerHorizontal="true">
+    </ListView>
 
 
     <TextView

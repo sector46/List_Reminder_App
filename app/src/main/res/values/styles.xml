@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -6,6 +6,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textViewStyle">@style/RobotoTextViewStyle</item>
     </style>
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
@@ -13,5 +14,27 @@
     </style>
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+
+    <style name="Dialog" parent="Base.Theme.AppCompat.Dialog">
+        <item name="android:timePickerDialogTheme" tools:targetApi="lollipop">@style/AppTheme2</item>
+    </style>
+    <style name="AppTheme2" parent="AppTheme">
+        <item name="android:headerBackground">@color/chosen_header_bg_color</item>
+        <item name="android:windowIsFloating">true</item>
+    </style>
+
+    <style name="Dialog1" parent="Base.Theme.AppCompat.Dialog">
+        <item name="android:datePickerDialogTheme" tools:targetApi="lollipop">@style/AppTheme3</item>
+    </style>
+    <style name="AppTheme3" parent="AppTheme">
+        <item name="android:headerBackground">@color/chosen_header_bg_color</item>
+        <item name="android:windowIsFloating">true</item>
+    </style>
+    <style name="RobotoTextViewStyle" parent="android:Widget.TextView">
+        <item name="android:fontFamily" tools:targetApi="jelly_bean">serif</item>
+        <item name="android:textColor" tools:targetApi="jelly_bean">#000000</item>
+    </style>
+
 
 </resources>

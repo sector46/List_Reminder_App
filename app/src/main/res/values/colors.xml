@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimary">#633303</color>
+    <color name="colorPrimaryDark">#333333</color>
+    <color name="colorAccent">#633303</color>
     <color name="transparent">#00000000</color>
     <color name="gray">#A9A9A9</color>
+    <color name="chosen_header_bg_color">#633303</color>
+    <color name="selectable_item_bg">#6cf1d70c</color>
+    <color name="black_alpha"  >#633303</color>
+    <color name="drk_button" >#6f3903</color>
+    <color name="lgt_button" >#6f3903</color>
+    <!--<color name="lgt_button" >#6333370c</color>-->
 </resources>
