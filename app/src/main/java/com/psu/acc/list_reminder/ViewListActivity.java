@@ -55,17 +55,15 @@ public class ViewListActivity extends Activity {
 
 
         /* Get list name from main activity, based on click by the user. */
-        if (xtra!=null)
-        {
-            if (xtra.getString("listname")!=null)
-            {
-            String listName = xtra.getString("listname");
-            // Create ListObject with the list retrieved from DB
-            databaseHelper = DatabaseHelper.getInstance(ViewListActivity.this);
-            list = databaseHelper.getList(listName);
+        if (xtra!=null) {
+            if (xtra.getString("listname")!= null) {
+                String listName = xtra.getString("listname");
+                // Create ListObject with the list retrieved from DB
+                databaseHelper = DatabaseHelper.getInstance(ViewListActivity.this);
+                list = databaseHelper.getList(listName);
             }
             else if (xtra.getString("date")!=null && xtra.getString("time")!=null){
-                reminderTextView.setText(xtra.getString("date")+" "+xtra.getString("time"));
+                reminderTextView.setText(xtra.getString("date") + " "+xtra.getString("time"));
             }
         }
 
@@ -97,11 +95,11 @@ public class ViewListActivity extends Activity {
         adapter = new ItemAdapter(this, itemNames, strike);
         listView.setAdapter(adapter);  //new ItemAdapter(this, itemList, list));
 
-//        if (xtra!=null)
-//        {
-//            //reminderTextView.setText("Reminder set to \n"+xtra.getString("date")+" "+xtra.getString("time"));
-//            reminderTextView.setText(xtra.getString("date")+" "+xtra.getString("time"));
-//        }
+        if (xtra!=null) {
+            if (xtra.getString("date")!=null && xtra.getString("time")!=null) {
+                reminderTextView.setText(xtra.getString("date") + " " + xtra.getString("time"));
+            }
+        }
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
@@ -139,6 +137,7 @@ public class ViewListActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), Reminder.class);
+                intent.putExtra("listname", list.getListName());
                 startActivity(intent);
             }
         });

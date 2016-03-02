@@ -47,13 +47,9 @@ public class Templates extends AppCompatActivity {
 
                 // ListView Clicked item value
                 String  itemValue    = (String) list.getItemAtPosition(position);
-                switch (itemValue) {
-                    case "Garage Sale":
-                        Intent intent = new Intent(getApplicationContext(), ViewListActivity.class);
-                        startActivity(intent);
-                        finish();
-                        break;
-                }
+                Intent i =new Intent(getApplicationContext(),ViewListActivity.class);
+                i.putExtra("listname", itemValue);
+                startActivity(i);
 
             }
 

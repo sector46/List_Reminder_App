@@ -30,8 +30,7 @@ import java.util.Date;
  * Created by chandhnikannatintavida on 2/14/16.
  */
 public class Reminder extends AppCompatActivity {
-    String date1;
-    String time1;
+    String date1,time1,listName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +39,13 @@ public class Reminder extends AppCompatActivity {
         Date date = new Date();
         SimpleDateFormat ft = new SimpleDateFormat ("dd.MM.yyyy");
         date1 = ft.format(date).toString();
+
+        Bundle xtra = getIntent().getExtras();
+        if (xtra!=null) {
+
+                listName = xtra.getString("listname");
+
+        }
 
 
         SimpleDateFormat ft1 = new SimpleDateFormat ("hh:mm a");
@@ -98,6 +104,7 @@ public class Reminder extends AppCompatActivity {
                 intent.putExtra("set",name);
                 intent.putExtra("time",time1);
                 intent.putExtra("date",date1);
+                intent.putExtra("listname",listName);
                 startActivity(intent);
                 finish();
 
