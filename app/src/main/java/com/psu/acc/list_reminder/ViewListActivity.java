@@ -53,13 +53,14 @@ public class ViewListActivity extends Activity {
         addItemEditText        = (EditText) findViewById(R.id.add_item_edittext);
         reminderTextView       = (TextView) findViewById(R.id.reminder_textview);
 
+        databaseHelper = DatabaseHelper.getInstance(ViewListActivity.this);
 
         /* Get list name from main activity, based on click by the user. */
         if (xtra!=null) {
             if (xtra.getString("listname")!= null) {
                 String listName = xtra.getString("listname");
                 // Create ListObject with the list retrieved from DB
-                databaseHelper = DatabaseHelper.getInstance(ViewListActivity.this);
+
                 list = databaseHelper.getList(listName);
             }
             else if (xtra.getString("date")!=null && xtra.getString("time")!=null){
@@ -121,6 +122,7 @@ public class ViewListActivity extends Activity {
                     if (!enableReminderCheckBox.isChecked()) {
                         reminderTextView.setVisibility(View.INVISIBLE);
                     }
+                    list.displayList();
                     databaseHelper.updateList(list);
                     editMode = false;
 
