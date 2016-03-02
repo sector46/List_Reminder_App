@@ -91,6 +91,11 @@ public class ListObject {
         this.reminderEnabled = reminderEnabled;
     }
 
+    //get count of items in list
+    public int getCount() {
+        return this.getListItems().entrySet().size();
+    }
+
     //Displays the list, just an sop for now, to be modified accordingly
     public void displayList() {
         System.out.println("\tListName: " + this.listName + "\n\tReminder DateTime: " + this.reminderDateTime +

@@ -111,6 +111,7 @@ public class ItemAdapter extends BaseAdapter {
 
     public void addItem(String name) {
         data.add(name);
+        strike.add("false");
     }
 
     public void setVisible(ListView listView) {

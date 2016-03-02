@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,7 +31,8 @@ import java.util.Date;
  * Created by chandhnikannatintavida on 2/14/16.
  */
 public class Reminder extends AppCompatActivity {
-    String date1,time1,listName;
+    String date1,time1,reminder1,listName;
+    Spinner s;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +63,7 @@ public class Reminder extends AppCompatActivity {
         array_spinner[3] = "Monthly";
 
 
-        final Spinner s = (Spinner) findViewById(R.id.sReminder);
+        s = (Spinner) findViewById(R.id.sReminder);
 
         ArrayAdapter adapter = new ArrayAdapter(Reminder.this, android.R.layout.simple_spinner_item, array_spinner);
 
@@ -100,10 +102,12 @@ public class Reminder extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String name ="set";
+                reminder1 = s.getSelectedItem().toString();
                 Intent intent = new Intent(v.getContext(), ViewListActivity.class);
                 intent.putExtra("set",name);
                 intent.putExtra("time",time1);
                 intent.putExtra("date",date1);
+                intent.putExtra("reminder",reminder1);
                 intent.putExtra("listname",listName);
                 startActivity(intent);
                 finish();

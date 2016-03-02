@@ -1,10 +1,15 @@
 package com.psu.acc.list_reminder;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -13,9 +18,11 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by caseybowman on 2/13/16.
@@ -25,7 +32,6 @@ public class ViewListActivity extends Activity {
 
     private Button doneButton;
     private ListView listView;
-    private ArrayAdapter<LinearLayout> listAdapter;
     private ImageButton editReminderButton;
     private ImageButton addItemConfirmationButton;
     private CheckBox enableReminderCheckBox;
@@ -36,7 +42,7 @@ public class ViewListActivity extends Activity {
     private boolean editMode = true;
     private ItemAdapter adapter;
     private DatabaseHelper databaseHelper;
-    ListObject list;
+    private ListObject list;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +62,7 @@ public class ViewListActivity extends Activity {
         databaseHelper = DatabaseHelper.getInstance(ViewListActivity.this);
 
         /* Get list name from main activity, based on click by the user. */
+
         if (xtra!=null) {
             if (xtra.getString("listname")!= null) {
                 String listName = xtra.getString("listname");
@@ -63,8 +70,11 @@ public class ViewListActivity extends Activity {
 
                 list = databaseHelper.getList(listName);
             }
-            else if (xtra.getString("date")!=null && xtra.getString("time")!=null){
-                reminderTextView.setText(xtra.getString("date") + " "+xtra.getString("time"));
+            if (xtra.getString("date")!=null && xtra.getString("time")!=null){
+                String reminder = xtra.getString("date") + " "+xtra.getString("time") +
+                                  " - " + xtra.getString("reminder");
+                reminderTextView.setText(reminder);
+                //reminderTextView.
             }
         }
 
@@ -98,14 +108,38 @@ public class ViewListActivity extends Activity {
 
         if (xtra!=null) {
             if (xtra.getString("date")!=null && xtra.getString("time")!=null) {
-                reminderTextView.setText(xtra.getString("date") + " " + xtra.getString("time"));
-                list.setReminderDateTime(xtra.getString("date") + " " + xtra.getString("time"));
+                reminderTextView.setText(xtra.getString("date") + " " + xtra.getString("time") +
+                                         " - " + xtra.getString("reminder"));
+                list.setReminderDateTime(xtra.getString("date") + " " + xtra.getString("time") +
+                                         " - " + xtra.getString("reminder"));
             }
         }
 
 
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
+        addItemConfirmationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setButton();
+            }
+        });
+
+        addItemEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    setButton();
+                    InputMethodManager imm = (InputMethodManager)v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
+                    return true;
+                }
+                return false;
+            }
+        });
+                    //Toast.makeText(HelloFormStuff.this, edittext.getText(), Toast.LENGTH_SHORT).show();
 
         doneButton.setOnClickListener(new View.OnClickListener() {
             // enable/disable visibility on views depending on what mode the user is in
@@ -154,6 +188,27 @@ public class ViewListActivity extends Activity {
         });
     }
 
-
+    void setButton() {
+        ArrayList<String> items = new ArrayList<String>(list.getListItems().keySet());
+        int count = items.size();
+        boolean isUnique = true;
+        String text = addItemEditText.getText().toString();
+        if (text.isEmpty() || text.replace(" ", "") == "") {
+            // add toast "Enter a value"
+        } else {
+            for(int i=0; i<count; i++) {
+                if(text == items.get(i)) {
+                    isUnique = false;
+                }
+            }
+            if (isUnique) {
+                list.addItemToList(text);
+                adapter.addItem(text);
+            } else {
+                // add toast "Item name already in list!"
+            }
+        }
+        addItemEditText.setText("");
+    }
 
 }
