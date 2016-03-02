@@ -83,7 +83,7 @@ public class ViewListActivity extends Activity {
         if (list == null)
             list = new ListObject(name, items, reminderDateTime, reminderRecurrence, reminderEnabled);
         titleEditText.setText(list.getListName());
-        System.out.println("Reminder date from DB: " + list.getReminderDateTime());
+
         reminderTextView.setText(list.getReminderDateTime());
         if (list.getReminderEnabled() == "true") {
             enableReminderCheckBox.setChecked(true);
@@ -122,7 +122,10 @@ public class ViewListActivity extends Activity {
                     if (!enableReminderCheckBox.isChecked()) {
                         reminderTextView.setVisibility(View.INVISIBLE);
                     }
-                    list.displayList();
+                    // Set list name in the ListObject
+                    list.setListName(titleEditText.getText().toString());
+                    //TO DO: Repopulate items of the list onto the ListObject
+                    // Update list with new object
                     databaseHelper.updateList(list);
                     editMode = false;
 

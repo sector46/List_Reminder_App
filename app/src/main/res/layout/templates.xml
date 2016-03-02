@@ -6,8 +6,7 @@
     android:background="@color/yellow">
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+
         android:text="New List"
         android:id="@+id/bNewList"
         android:layout_gravity="center_horizontal"
@@ -15,7 +14,13 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:background="@drawable/layer_list"
-        android:textColor="#ffffff"/>
+        android:textColor="#ffffff"
+        android:layout_width="85pt"
+        android:layout_height="25pt"
+        android:paddingLeft="20dip"
+        android:paddingRight="20dip"
+        android:paddingTop="10dip"
+        android:paddingBottom="10dip"/>
 
 
     <ListView

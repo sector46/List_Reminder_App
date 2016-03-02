@@ -21,7 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="List 4 Later"
+        android:text="Lists 4 Later"
         android:id="@+id/textView"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
@@ -49,7 +49,9 @@
         android:layout_below="@+id/bAddList"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="67dp" />
+        android:layout_marginTop="67dp"
+        android:fastScrollAlwaysVisible="true"
+        android:fastScrollEnabled="true" />
 
 
 </RelativeLayout>

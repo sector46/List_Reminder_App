@@ -18,6 +18,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ListView existingListsView;
     private DatabaseHelper databaseHelper;
+    ArrayAdapter<String> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,8 +118,9 @@ public class MainActivity extends AppCompatActivity {
     private void displayExistingLists() {
         if (databaseHelper.getAllListNames().size() != 0) {
             List<String> existingLists = databaseHelper.getAllListNames();
-
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, android.R.id.text1, existingLists);
+            for (String list : existingLists)
+                System.out.println(list);
+            adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, android.R.id.text1, existingLists);
             existingListsView.setAdapter(adapter);
             // ListView Item Click Listener
             existingListsView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -145,6 +147,20 @@ public class MainActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
+    }
+    @Override
+    public void onResume() {
+
+        super.onResume();
+        adapter.notifyDataSetChanged();
+
+    }
+    @Override
+    public void onRestart() {
+
+        super.onRestart();
+        adapter.notifyDataSetChanged();
+
     }
 
     @Override
