@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         //Testing the DatabaseHelper methods. (to be removed after integration)
         databaseHelper = DatabaseHelper.getInstance(MainActivity.this);
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
-//        databaseHelper.removeList("Grocery");
+//       databaseHelper.removeList(" ");
 //
 //        //Display existing lists, and remove all initially
 //        List<String> existingLists = databaseHelper.getAllListNames();
