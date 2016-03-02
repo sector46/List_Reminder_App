@@ -1,18 +1,18 @@
 package com.psu.acc.list_reminder;
 
-import android.content.ContentValues;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,11 +27,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.content_main);
 //        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
 
-        Button bAddList =(Button) findViewById(R.id.bAddList);
+        Button bAddList = (Button) findViewById(R.id.bAddList);
 
         bAddList.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        existingListsView = (ListView)findViewById(R.id.existingListsView);
+        existingListsView = (ListView) findViewById(R.id.existingListsView);
 
         //Testing the DatabaseHelper methods. (to be removed after integration)
         databaseHelper = DatabaseHelper.getInstance(MainActivity.this);
@@ -119,11 +119,52 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //Display existing lists on the MainActivity page
-    private void displayExistingLists(){
+    private void displayExistingLists() {
         List<String> existingLists = databaseHelper.getAllListNames();
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, android.R.id.text1, existingLists);
         existingListsView.setAdapter(adapter);
+        // ListView Item Click Listener
+        existingListsView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+
+                // ListView Clicked item value
+                String itemValue = (String) existingListsView.getItemAtPosition(position);
+                //itemvalue is to be compared with the db list name and if it is present return listobject
+                Intent i =new Intent(getApplicationContext(),ViewListActivity.class);
+                i.putExtra("listname",itemValue);
+                startActivity(i);
+//                viewListItems(itemValue);
+
+
+            }
+
+        });
+    }
+
+    public void viewListItems(String listName) {
+
+        ListObject retrievedList = databaseHelper.getList(listName);
+        retrievedList.displayList();
+
+        setContentView(R.layout.view_list);
+        ListView itemsListView = (ListView) findViewById(R.id.item_list);
+        List<String> itemsList = new ArrayList<>(retrievedList.getListItems().keySet());
+        for (String item : itemsList)
+            System.out.println(item);
+        ArrayAdapter<String> adapter1 = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, android.R.id.text1, itemsList);
+        itemsListView.setAdapter(adapter1);
+
+        EditText elistname = (EditText) findViewById(R.id.title_edittext);
+        elistname.setText(listName);
+
+        TextView reminder = (TextView) findViewById(R.id.reminder_textview);
+        reminder.setText(retrievedList.getReminderDateTime());
+
+
     }
 
     @Override

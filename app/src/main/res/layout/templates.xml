@@ -32,9 +32,11 @@
         android:layout_height="wrap_content"
         android:text="Choose from Existing Lists:"
         android:id="@+id/tvExistinglist"
+        android:layout_marginTop="70dp"
+        android:textColor="#050505"
+        android:textSize="20dp"
         android:layout_below="@+id/bNewList"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="82dp"
-        android:textColor="#050505" />
+        android:textIsSelectable="false" />
 
 </RelativeLayout>
