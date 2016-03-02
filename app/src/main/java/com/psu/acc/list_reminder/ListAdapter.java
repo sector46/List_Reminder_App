@@ -73,8 +73,8 @@ public class ListAdapter extends BaseAdapter {
 
                 itemValue = (String) data.get(position);
                 //trial....
-                ViewListActivity vl = new ViewListActivity();
-                vl.ViewActivity(v.getContext(),data.get(position).toString());
+                //ViewListActivity vl = new ViewListActivity();
+                //vl.ViewActivity(v.getContext(),data.get(position).toString());
 
 
 

@@ -44,6 +44,10 @@ public class ViewListActivity extends Activity {
     private DatabaseHelper databaseHelper;
     private ListObject list;
 
+    private ArrayList<String> itemNames;
+    private ArrayList<String> strike;
+    private HashMap<String,String> map;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,15 +83,15 @@ public class ViewListActivity extends Activity {
         }
 
         /***** Object Creation (in case you've clicked New at Main Activity) *****/
-        String name = "Test List";
+        String name = "";
         HashMap<String, String> items = new HashMap<String, String>();
         items.put("Milk", "false");
         items.put("Eggs", "false");
         items.put("Bananas", "false");
         items.put("Bread", "false");
-        String reminderDateTime = "03.01.2016 12:45 AM";
-        String reminderRecurrence = "Daily";
-        String reminderEnabled = "true";
+        String reminderDateTime = "No reminder is set"; //"03.01.2016 12:45 AM";
+        String reminderRecurrence = "Never"; //Daily";
+        String reminderEnabled = "false"; //"true";
 
         //If list is null, meaning you've clicked new at MainActivity, instantiate ListObject
         if (list == null)
@@ -95,16 +99,16 @@ public class ViewListActivity extends Activity {
         titleEditText.setText(list.getListName());
 
         reminderTextView.setText(list.getReminderDateTime());
-        if (list.getReminderEnabled() == "true") {
+        if (list.getReminderEnabled().equals("true")) {
             enableReminderCheckBox.setChecked(true);
         } else {
             enableReminderCheckBox.setChecked(false);
         }
-        ArrayList<String> itemNames = new ArrayList<String>(list.getListItems().keySet());
-        ArrayList<String> strike = new ArrayList<String>(list.getListItems().values());
+        itemNames = new ArrayList<String>(list.getListItems().keySet());
+        strike = new ArrayList<String>(list.getListItems().values());
 
         adapter = new ItemAdapter(this, itemNames, strike);
-        listView.setAdapter(adapter);  //new ItemAdapter(this, itemList, list));
+        listView.setAdapter(adapter);
 
         if (xtra!=null) {
             if (xtra.getString("date")!=null && xtra.getString("time")!=null) {
@@ -115,14 +119,14 @@ public class ViewListActivity extends Activity {
             }
         }
 
-
-
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         addItemConfirmationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 setButton();
+                InputMethodManager imm = (InputMethodManager)addItemEditText.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(addItemEditText.getWindowToken(), 0);
             }
         });
 
@@ -139,30 +143,44 @@ public class ViewListActivity extends Activity {
                 return false;
             }
         });
-                    //Toast.makeText(HelloFormStuff.this, edittext.getText(), Toast.LENGTH_SHORT).show();
 
         doneButton.setOnClickListener(new View.OnClickListener() {
             // enable/disable visibility on views depending on what mode the user is in
             @Override
             public void onClick(View view) {
                 if (editMode == true) {
-                    adapter.setInvisible(listView);
-                    editReminderButton.setVisibility(View.INVISIBLE);
-                    addItemConfirmationButton.setVisibility(View.INVISIBLE);
-                    enableReminderCheckBox.setVisibility(View.INVISIBLE);
-                    titleEditText.setFocusable(false);
-                    addItemEditText.setVisibility(View.INVISIBLE);
-                    doneButton.setText(R.string.edit_list_button);
-                    if (!enableReminderCheckBox.isChecked()) {
-                        reminderTextView.setVisibility(View.INVISIBLE);
-                    }
-                    // Set list name in the ListObject
-                    list.setListName(titleEditText.getText().toString());
-                    //TO DO: Repopulate items of the list onto the ListObject
-                    // Update list with new object
-                    databaseHelper.updateList(list);
-                    editMode = false;
+//                    if (checkedTitle()) {
+                        adapter.setInvisible(listView);
+                        editReminderButton.setVisibility(View.INVISIBLE);
+                        addItemConfirmationButton.setVisibility(View.INVISIBLE);
+                        enableReminderCheckBox.setVisibility(View.INVISIBLE);
+                        titleEditText.setFocusable(false);
+                        addItemEditText.setVisibility(View.INVISIBLE);
+                        doneButton.setText(R.string.edit_list_button);
 
+                        // list population
+                        list.setListName(titleEditText.getText().toString());
+                        map = new HashMap<String,String>();
+                        itemNames = adapter.getNames();
+                        strike = adapter.getStrikes();
+                        if(itemNames.size() == strike.size()){
+                            for(int index = 0; index < itemNames.size(); index++){
+                                map.put(itemNames.get(index), strike.get(index));
+                            }
+                        }
+                        list.setListItems(map);
+                        list.setReminderDateTime(reminderTextView.getText().toString());
+                        if (enableReminderCheckBox.isChecked()) {
+                            list.setReminderEnabled("true");
+                        } else {
+                            reminderTextView.setVisibility(View.INVISIBLE);
+                            list.setReminderEnabled("false");
+                        }
+                        //TO DO: Repopulate items of the list onto the ListObject
+                        // Update list with new object
+                        databaseHelper.updateList(list);
+                        editMode = false;
+//                    }
                 } else {
                     adapter.setVisible(listView);
                     editReminderButton.setVisibility(View.VISIBLE);
@@ -188,16 +206,33 @@ public class ViewListActivity extends Activity {
         });
     }
 
+    boolean checkedTitle() {
+        ArrayList<String> names = (ArrayList<String>) databaseHelper.getAllListNames();
+        for(int i=0; i<names.size(); i++) {
+            if (list.getListName().equals(names.get(i))) {
+                Toast.makeText(ViewListActivity.this, "'" + list.getListName() + "' is already in the database!",
+                        Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        }
+        return true;
+    }
+
     void setButton() {
         ArrayList<String> items = new ArrayList<String>(list.getListItems().keySet());
+        for(int i=0; i<items.size(); i++) {
+            Log.i("items values: ", items.get(i));
+        }
         int count = items.size();
         boolean isUnique = true;
         String text = addItemEditText.getText().toString();
-        if (text.isEmpty() || text.replace(" ", "") == "") {
+        if (text.isEmpty() || text.replace(" ", "").equals("")) {
             // add toast "Enter a value"
+            Toast.makeText(ViewListActivity.this, "Nothing was entered!",
+                    Toast.LENGTH_SHORT).show();
         } else {
             for(int i=0; i<count; i++) {
-                if(text == items.get(i)) {
+                if(text.equals(items.get(i))) {
                     isUnique = false;
                 }
             }
@@ -206,6 +241,8 @@ public class ViewListActivity extends Activity {
                 adapter.addItem(text);
             } else {
                 // add toast "Item name already in list!"
+                Toast.makeText(ViewListActivity.this, "'" + text + "' is already in the list!",
+                        Toast.LENGTH_SHORT).show();
             }
         }
         addItemEditText.setText("");

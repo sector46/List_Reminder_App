@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Paint;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -85,26 +86,25 @@ public class ItemAdapter extends BaseAdapter {
                 data.remove(position);
                 strike.remove(position);
                 notifyDataSetChanged();
-                updateViews(position);
+                updateViews();
+                Log.i("layouts = ", Integer.toString(listView.getCount()));
             }
         });
         return vi;
     }
 
-    private void updateViews(int index) {
-        if (index < getCount()) {
-            RelativeLayout relLayout;
-            TextView text;
-            for(int i=index; i<getCount(); i++) {
-                relLayout = (RelativeLayout)listView.getChildAt(i);
-                text = (TextView) relLayout.findViewById(R.id.item_name);
-                if (strike.get(i) == "true") {
-                    relLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.gray));
-                    text.setPaintFlags(text.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                } else {
-                    relLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.yellow));
-                    text.setPaintFlags(text.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
-                }
+    private void updateViews() {
+        RelativeLayout relLayout;
+        TextView text;
+        for(int i=0; i<getCount(); i++) {
+            relLayout = (RelativeLayout)listView.getChildAt(i);
+            text = (TextView) relLayout.findViewById(R.id.item_name);
+            if (strike.get(i) == "true") {
+                relLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.gray));
+                text.setPaintFlags(text.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            } else {
+                relLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.yellow));
+                text.setPaintFlags(text.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
             }
         }
     }
@@ -112,6 +112,7 @@ public class ItemAdapter extends BaseAdapter {
     public void addItem(String name) {
         data.add(name);
         strike.add("false");
+        notifyDataSetChanged();
     }
 
     public void setVisible(ListView listView) {
@@ -134,6 +135,14 @@ public class ItemAdapter extends BaseAdapter {
             button = (ImageButton) view.findViewById(R.id.delete_item_button);
             button.setVisibility(View.INVISIBLE);
         }
+    }
+
+    public ArrayList<String> getNames() {
+        return data;
+    }
+
+    public ArrayList<String> getStrikes() {
+        return strike;
     }
 
 }
