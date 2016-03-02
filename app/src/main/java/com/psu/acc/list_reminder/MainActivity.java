@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -19,7 +21,8 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseHelper databaseHelper;
     ArrayList<String> listNames;
     List<String> existingLists;
-    ListAdapter adapter;
+    //ListAdapter adapter;
+    ArrayAdapter<String> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,9 +123,27 @@ public class MainActivity extends AppCompatActivity {
     private void displayExistingLists() {
         if (databaseHelper.getAllListNames().size() != 0) {
 
-            listNames = new ArrayList<>(databaseHelper.getAllListNames());
-            adapter = new ListAdapter(this,listNames,databaseHelper);
+//            listNames = new ArrayList<>(databaseHelper.getAllListNames());
+//            adapter = new ListAdapter(this,listNames,databaseHelper);
+//            existingListsView.setAdapter(adapter);
+            existingLists = databaseHelper.getAllListNames();
+
+            for (String list : existingLists)
+                System.out.println(list);
+            adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, android.R.id.text1, existingLists);
             existingListsView.setAdapter(adapter);
+
+                    // ListView Item Click Listener
+                    existingListsView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            String  itemValue    = (String) existingListsView.getItemAtPosition(position);
+                            Intent i =new Intent(getApplicationContext(),ViewListActivity.class);
+                            i.putExtra("listname", itemValue);
+                            startActivity(i);
+                        }
+                    });
         }
     }
 

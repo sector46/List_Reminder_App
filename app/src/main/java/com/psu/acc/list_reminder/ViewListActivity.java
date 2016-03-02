@@ -10,19 +10,16 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by caseybowman on 2/13/16.
@@ -157,9 +154,9 @@ public class ViewListActivity extends Activity {
                         titleEditText.setFocusable(false);
                         addItemEditText.setVisibility(View.INVISIBLE);
                         doneButton.setText(R.string.edit_list_button);
-
+                        Log.d("title----+",titleEditText.getText().toString());
                         // list population
-                        list.setListName(titleEditText.getText().toString());
+
                         map = new HashMap<String,String>();
                         itemNames = adapter.getNames();
                         strike = adapter.getStrikes();
@@ -176,10 +173,47 @@ public class ViewListActivity extends Activity {
                             reminderTextView.setVisibility(View.INVISIBLE);
                             list.setReminderEnabled("false");
                         }
-                        //TO DO: Repopulate items of the list onto the ListObject
-                        // Update list with new object
+                    System.out.print("+++++++++"+titleEditText.getText().toString());
+                    if(titleEditText.getText().toString().equals("")){
+//                        AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+//                        builder.setTitle("Warning!");
+//                        builder.setMessage("You have not entered a Title for the list.Please enter a Title!")
+//                                .setCancelable(false)
+//                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                                    public void onClick(DialogInterface dialog, int id) {
+//                                        //do things
+//                                    }
+//                                });
+//                        AlertDialog alert = builder.create();
+//                        alert.show();
+                        Toast.makeText(ViewListActivity.this, "You have not entered a Title for the list.Please enter a Title!",
+                                Toast.LENGTH_SHORT).show();
+                        list.setListName("Test Title");
+
+                    }else if(checkedTitle()){
+                        list.setListName(titleEditText.getText().toString());
                         databaseHelper.updateList(list);
                         editMode = false;
+                    }else if (!checkedTitle()){
+//                        AlertDialog.Builder builder = new AlertDialog.Builder(getBaseContext());
+//                        builder.setTitle("Warning!");
+//                        builder.setMessage("The Title you have enered is already taken.Please enter a new Title!")
+//                                .setCancelable(false)
+//                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                                    public void onClick(DialogInterface dialog, int id) {
+//                                        //do things
+//                                    }
+//                                });
+//                        AlertDialog alert = builder.create();
+//                        alert.show();
+                        Toast.makeText(ViewListActivity.this, "'" + list.getListName() + "' is already in the taken.Please enter a new Title!",
+                                Toast.LENGTH_SHORT).show();
+
+                    }
+                        //TO DO: Repopulate items of the list onto the ListObject
+                        // Update list with new object
+                       // databaseHelper.updateList(list);
+                      //  editMode = false;
 //                    }
                 } else {
                     adapter.setVisible(listView);
