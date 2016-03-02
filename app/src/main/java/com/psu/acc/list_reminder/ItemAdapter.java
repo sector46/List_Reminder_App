@@ -1,5 +1,6 @@
 package com.psu.acc.list_reminder;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Paint;
 import android.support.v4.content.ContextCompat;
@@ -23,6 +24,7 @@ public class ItemAdapter extends BaseAdapter {
     ArrayList<String> data;
     ArrayList<String> strike;
     private static LayoutInflater inflater = null;
+    ListView listView;
 
     public ItemAdapter(Context context, ArrayList<String> data, ArrayList<String> strike) {
         // TODO Auto-generated constructor stub
@@ -31,6 +33,7 @@ public class ItemAdapter extends BaseAdapter {
         this.strike = strike;
         inflater = (LayoutInflater) context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.listView = (ListView)((Activity)context).findViewById(R.id.item_list);
     }
 
     @Override
@@ -82,9 +85,28 @@ public class ItemAdapter extends BaseAdapter {
                 data.remove(position);
                 strike.remove(position);
                 notifyDataSetChanged();
+                updateViews(position);
             }
         });
         return vi;
+    }
+
+    private void updateViews(int index) {
+        if (index < getCount()) {
+            RelativeLayout relLayout;
+            TextView text;
+            for(int i=index; i<getCount(); i++) {
+                relLayout = (RelativeLayout)listView.getChildAt(i);
+                text = (TextView) relLayout.findViewById(R.id.item_name);
+                if (strike.get(i) == "true") {
+                    relLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.gray));
+                    text.setPaintFlags(text.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                } else {
+                    relLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.yellow));
+                    text.setPaintFlags(text.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+                }
+            }
+        }
     }
 
     public void addItem(String name) {
