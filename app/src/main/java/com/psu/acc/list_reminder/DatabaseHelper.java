@@ -117,35 +117,41 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * Add a list to the database.
      * NOTE: Spaces in the list_name are replaced by underscore before insertion to database.
      * @param listObject listObject populated with all its fields.
+     * @return true if the list was successfully added to the DB and false if it failed.
      */
-    public void addList(ListObject listObject) {
+    public boolean addList(ListObject listObject) {
         SQLiteDatabase db = this.getWritableDatabase();
         String listName = listObject.getListName().replaceAll(" ", "_");
-        // Insert list info into the lists_table (all info except list items)
-        ContentValues listValues = new ContentValues();
-        listValues.put(LIST_NAME, listName); // List name
-        listValues.put(REMINDER, listObject.getReminderDateTime()); // Reminder for list
-        listValues.put(REMINDER_RECURRENCE, listObject.getReminderRecurrence()); // Recurrence for the reminder
-        listValues.put(REMINDER_ENABLED, listObject.getReminderEnabled()); // If reminder is enabled.
-        // Inserting Row into lists table
-        db.insert(LISTS_TABLE, null, listValues);
+        if (Character.isDigit(listName.charAt(0))) {
+            return false;
+        } else {
+            // Insert list info into the lists_table (all info except list items)
+            ContentValues listValues = new ContentValues();
+            listValues.put(LIST_NAME, listName); // List name
+            listValues.put(REMINDER, listObject.getReminderDateTime()); // Reminder for list
+            listValues.put(REMINDER_RECURRENCE, listObject.getReminderRecurrence()); // Recurrence for the reminder
+            listValues.put(REMINDER_ENABLED, listObject.getReminderEnabled()); // If reminder is enabled.
+            // Inserting Row into lists table
+            db.insert(LISTS_TABLE, null, listValues);
 
-        //Create a table with the listname to store item name and if its done/struck off (value: true) or incomplete (also, default value: false)
-        // SQL statement to create list table to store items on the list.
-        String CREATE_NEW_LIST_TABLE = "CREATE TABLE " + listName +
-                " ( " + ITEM_NAME + " TEXT PRIMARY KEY, " +
-                ITEM_STATUS + " TEXT)";
+            //Create a table with the listname to store item name and if its done/struck off (value: true) or incomplete (also, default value: false)
+            // SQL statement to create list table to store items on the list.
+            String CREATE_NEW_LIST_TABLE = "CREATE TABLE " + listName +
+                    " ( " + ITEM_NAME + " TEXT PRIMARY KEY, " +
+                    ITEM_STATUS + " TEXT)";
 
-        db.execSQL(CREATE_NEW_LIST_TABLE);
+            db.execSQL(CREATE_NEW_LIST_TABLE);
 
-        //Insert items into the list table.
-        Map<String, String> items = listObject.getListItems();
-        for (String key : items.keySet()) {
-            String value = items.get(key);
-            ContentValues ITEM_VALUES = new ContentValues();
-            ITEM_VALUES.put(ITEM_NAME, key); // Item name
-            ITEM_VALUES.put(ITEM_STATUS, value); // Item status
-            db.insert(listName, null, ITEM_VALUES);
+            //Insert items into the list table.
+            Map<String, String> items = listObject.getListItems();
+            for (String key : items.keySet()) {
+                String value = items.get(key);
+                ContentValues ITEM_VALUES = new ContentValues();
+                ITEM_VALUES.put(ITEM_NAME, key); // Item name
+                ITEM_VALUES.put(ITEM_STATUS, value); // Item status
+                db.insert(listName, null, ITEM_VALUES);
+            }
+            return true;
         }
     }
 
@@ -184,13 +190,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     /**
      * Update a list.
      * @param listObject the list object including the changes to the list.
+     * @return true if list was updated in the DB successfully, else returns false.
      */
-    public void updateList(ListObject listObject) {
+    public boolean updateList(ListObject listObject) {
         //Remove the list from the database and create it again with the new listObject
         if (getAllListNames().contains(listObject.getListName())) {
             removeList(listObject.getListName());
         }
-        addList(listObject);
+        return addList(listObject);
     }
 
     /**
