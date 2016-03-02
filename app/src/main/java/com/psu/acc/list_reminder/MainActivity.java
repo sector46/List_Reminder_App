@@ -160,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
 
         super.onRestart();
         adapter.notifyDataSetChanged();
-
+        displayExistingLists();
     }
 
     @Override
