@@ -98,8 +98,11 @@ public class ViewListActivity extends Activity {
         if (xtra!=null) {
             if (xtra.getString("date")!=null && xtra.getString("time")!=null) {
                 reminderTextView.setText(xtra.getString("date") + " " + xtra.getString("time"));
+                list.setReminderDateTime(xtra.getString("date") + " " + xtra.getString("time"));
             }
         }
+
+
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
@@ -118,7 +121,9 @@ public class ViewListActivity extends Activity {
                     if (!enableReminderCheckBox.isChecked()) {
                         reminderTextView.setVisibility(View.INVISIBLE);
                     }
+                    databaseHelper.updateList(list);
                     editMode = false;
+
                 } else {
                     adapter.setVisible(listView);
                     editReminderButton.setVisibility(View.VISIBLE);
@@ -129,6 +134,7 @@ public class ViewListActivity extends Activity {
                     doneButton.setText(R.string.done_button);
                     reminderTextView.setVisibility(View.VISIBLE);
                     editMode = true;
+                    finish();
                 }
             }
         });

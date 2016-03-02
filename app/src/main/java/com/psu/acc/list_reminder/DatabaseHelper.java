@@ -178,7 +178,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
     public void removeItemFromList(String listName, String itemName) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(listName.replaceAll(" ","_"), ITEM_NAME + "= ?", new String[]{itemName});
+        db.delete(listName.replaceAll(" ", "_"), ITEM_NAME + "= ?", new String[]{itemName});
     }
 
     /**
@@ -187,7 +187,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
     public void updateList(ListObject listObject) {
         //Remove the list from the database and create it again with the new listObject
-        removeList(listObject.getListName());
+        if (getAllListNames().contains(listObject.getListName())) {
+            removeList(listObject.getListName());
+        }
         addList(listObject);
     }
 
