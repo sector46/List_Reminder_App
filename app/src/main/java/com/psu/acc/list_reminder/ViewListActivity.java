@@ -82,10 +82,10 @@ public class ViewListActivity extends Activity {
         /***** Object Creation (in case you've clicked New at Main Activity) *****/
         String name = "";
         HashMap<String, String> items = new HashMap<String, String>();
-        items.put("Milk", "false");
-        items.put("Eggs", "false");
-        items.put("Bananas", "false");
-        items.put("Bread", "false");
+//        items.put("Milk", "false");
+//        items.put("Eggs", "false");
+//        items.put("Bananas", "false");
+//        items.put("Bread", "false");
         String reminderDateTime = "No reminder is set"; //"03.01.2016 12:45 AM";
         String reminderRecurrence = "Never"; //Daily";
         String reminderEnabled = "false"; //"true";
@@ -154,62 +154,43 @@ public class ViewListActivity extends Activity {
                         titleEditText.setFocusable(false);
                         addItemEditText.setVisibility(View.INVISIBLE);
                         doneButton.setText(R.string.edit_list_button);
-                        Log.d("title----+",titleEditText.getText().toString());
+                       setList();
                         // list population
 
-                        map = new HashMap<String,String>();
-                        itemNames = adapter.getNames();
-                        strike = adapter.getStrikes();
-                        if(itemNames.size() == strike.size()){
-                            for(int index = 0; index < itemNames.size(); index++){
-                                map.put(itemNames.get(index), strike.get(index));
-                            }
-                        }
-                        list.setListItems(map);
-                        list.setReminderDateTime(reminderTextView.getText().toString());
-                        if (enableReminderCheckBox.isChecked()) {
-                            list.setReminderEnabled("true");
-                        } else {
-                            reminderTextView.setVisibility(View.INVISIBLE);
-                            list.setReminderEnabled("false");
-                        }
-                    System.out.print("+++++++++"+titleEditText.getText().toString());
-                    if(titleEditText.getText().toString().equals("")){
-//                        AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
-//                        builder.setTitle("Warning!");
-//                        builder.setMessage("You have not entered a Title for the list.Please enter a Title!")
-//                                .setCancelable(false)
-//                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//                                    public void onClick(DialogInterface dialog, int id) {
-//                                        //do things
-//                                    }
-//                                });
-//                        AlertDialog alert = builder.create();
-//                        alert.show();
-                        Toast.makeText(ViewListActivity.this, "You have not entered a Title for the list.Please enter a Title!",
-                                Toast.LENGTH_SHORT).show();
-                        list.setListName("Test Title");
-
-                    }else if(checkedTitle()){
-                        list.setListName(titleEditText.getText().toString());
-                        databaseHelper.updateList(list);
-                        editMode = false;
-                    }else if (!checkedTitle()){
-//                        AlertDialog.Builder builder = new AlertDialog.Builder(getBaseContext());
-//                        builder.setTitle("Warning!");
-//                        builder.setMessage("The Title you have enered is already taken.Please enter a new Title!")
-//                                .setCancelable(false)
-//                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//                                    public void onClick(DialogInterface dialog, int id) {
-//                                        //do things
-//                                    }
-//                                });
-//                        AlertDialog alert = builder.create();
-//                        alert.show();
-                        Toast.makeText(ViewListActivity.this, "'" + list.getListName() + "' is already in the taken.Please enter a new Title!",
-                                Toast.LENGTH_SHORT).show();
-
-                    }
+//                        map = new HashMap<String,String>();
+//                        itemNames = adapter.getNames();
+//                        strike = adapter.getStrikes();
+//                        if(itemNames.size() == strike.size()){
+//                            for(int index = 0; index < itemNames.size(); index++){
+//                                map.put(itemNames.get(index), strike.get(index));
+//                            }
+//                        }
+//                        list.setListItems(map);
+//                        list.setReminderDateTime(reminderTextView.getText().toString());
+//                        if (enableReminderCheckBox.isChecked()) {
+//                            list.setReminderEnabled("true");
+//                        } else {
+//                            reminderTextView.setVisibility(View.INVISIBLE);
+//                            list.setReminderEnabled("false");
+//                        }
+//                    System.out.print("+++++++++"+titleEditText.getText().toString());
+//                    if(titleEditText.getText().toString().equals("")){
+//
+//                        Toast.makeText(ViewListActivity.this, "You have not entered a Title for the list.Please enter a Title!",
+//                                Toast.LENGTH_SHORT).show();
+//                        list.setListName("Test Title");
+//
+//                    }else if(checkedTitle()){
+//                        list.setListName(titleEditText.getText().toString());
+//                        databaseHelper.updateList(list);
+//                        editMode = false;
+//                    }
+//                    else if (!checkedTitle()){
+//
+//                        Toast.makeText(ViewListActivity.this, "'" + list.getListName() + "' is already in the taken.Please enter a new Title!",
+//                                Toast.LENGTH_SHORT).show();
+//
+//                    }
                         //TO DO: Repopulate items of the list onto the ListObject
                         // Update list with new object
                        // databaseHelper.updateList(list);
@@ -225,14 +206,16 @@ public class ViewListActivity extends Activity {
                     doneButton.setText(R.string.done_button);
                     reminderTextView.setVisibility(View.VISIBLE);
                     editMode = true;
-                    finish();
+
                 }
+
             }
         });
 
         editReminderButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                setList();
                 Intent intent = new Intent(v.getContext(), Reminder.class);
                 intent.putExtra("listname", list.getListName());
                 startActivity(intent);
@@ -244,8 +227,8 @@ public class ViewListActivity extends Activity {
         ArrayList<String> names = (ArrayList<String>) databaseHelper.getAllListNames();
         for(int i=0; i<names.size(); i++) {
             if (list.getListName().equals(names.get(i))) {
-                Toast.makeText(ViewListActivity.this, "'" + list.getListName() + "' is already in the database!",
-                        Toast.LENGTH_SHORT).show();
+//                Toast.makeText(ViewListActivity.this, "'" + list.getListName() + "' is already in the database!",
+//                        Toast.LENGTH_SHORT).show();
                 return false;
             }
         }
@@ -280,6 +263,36 @@ public class ViewListActivity extends Activity {
             }
         }
         addItemEditText.setText("");
+    }
+    public void setList(){
+        map = new HashMap<String,String>();
+        itemNames = adapter.getNames();
+        strike = adapter.getStrikes();
+        if(itemNames.size() == strike.size()){
+            for(int index = 0; index < itemNames.size(); index++){
+                map.put(itemNames.get(index), strike.get(index));
+            }
+        }
+        list.setListItems(map);
+        list.setReminderDateTime(reminderTextView.getText().toString());
+        if (enableReminderCheckBox.isChecked()) {
+            list.setReminderEnabled("true");
+        } else {
+            reminderTextView.setVisibility(View.INVISIBLE);
+            list.setReminderEnabled("false");
+        }
+        System.out.print("+++++++++"+titleEditText.getText().toString());
+        if(titleEditText.getText().toString().equals("")){
+
+            Toast.makeText(ViewListActivity.this, "You have not entered a Title for the list.Please enter a Title!",
+                    Toast.LENGTH_SHORT).show();
+            list.setListName("Test Title");
+
+        }else {
+            list.setListName(titleEditText.getText().toString());
+            databaseHelper.updateList(list);
+            editMode = false;
+        }
     }
 
 }

@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         //Testing the DatabaseHelper methods. (to be removed after integration)
         databaseHelper = DatabaseHelper.getInstance(MainActivity.this);
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
-//       databaseHelper.removeList(" ");
+//       databaseHelper.removeList();
 //
 //        //Display existing lists, and remove all initially
 //        List<String> existingLists = databaseHelper.getAllListNames();
@@ -139,6 +139,7 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                             String  itemValue    = (String) existingListsView.getItemAtPosition(position);
+
                             Intent i =new Intent(getApplicationContext(),ViewListActivity.class);
                             i.putExtra("listname", itemValue);
                             startActivity(i);
