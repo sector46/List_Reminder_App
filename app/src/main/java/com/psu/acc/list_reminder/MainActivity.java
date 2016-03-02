@@ -4,24 +4,22 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private ListView existingListsView;
     private DatabaseHelper databaseHelper;
-    ArrayAdapter<String> adapter;
-    LayoutInflater inflater=null;
+    ArrayList<String> listNames;
     List<String> existingLists;
+    ListAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
         //Testing the DatabaseHelper methods. (to be removed after integration)
         databaseHelper = DatabaseHelper.getInstance(MainActivity.this);
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
+        databaseHelper.removeList("Grocery");
 //
 //        //Display existing lists, and remove all initially
 //        List<String> existingLists = databaseHelper.getAllListNames();
@@ -120,29 +119,10 @@ public class MainActivity extends AppCompatActivity {
     //Display existing lists on the MainActivity page
     private void displayExistingLists() {
         if (databaseHelper.getAllListNames().size() != 0) {
-            existingLists = databaseHelper.getAllListNames();
-            for (String list : existingLists)
-                System.out.println(list);
-            adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, android.R.id.text1, existingLists);
+
+            listNames = new ArrayList<>(databaseHelper.getAllListNames());
+            adapter = new ListAdapter(this,listNames,databaseHelper);
             existingListsView.setAdapter(adapter);
-
-            // ListView Item Click Listener
-            existingListsView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view,
-                                        int position, long id) {
-
-                    // ListView Clicked item value
-                    String itemValue = (String) existingListsView.getItemAtPosition(position);
-                    //itemvalue is to be compared with the db list name and if it is present return listobject
-                    Intent i = new Intent(getApplicationContext(), ViewListActivity.class);
-                    i.putExtra("listname", itemValue);
-                    startActivity(i);
-
-                }
-
-            });
         }
     }
 
