@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,6 +20,8 @@ public class MainActivity extends AppCompatActivity {
     private ListView existingListsView;
     private DatabaseHelper databaseHelper;
     ArrayAdapter<String> adapter;
+    LayoutInflater inflater=null;
+    List<String> existingLists;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,11 +120,12 @@ public class MainActivity extends AppCompatActivity {
     //Display existing lists on the MainActivity page
     private void displayExistingLists() {
         if (databaseHelper.getAllListNames().size() != 0) {
-            List<String> existingLists = databaseHelper.getAllListNames();
+            existingLists = databaseHelper.getAllListNames();
             for (String list : existingLists)
                 System.out.println(list);
             adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, android.R.id.text1, existingLists);
             existingListsView.setAdapter(adapter);
+
             // ListView Item Click Listener
             existingListsView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -152,14 +156,14 @@ public class MainActivity extends AppCompatActivity {
     public void onResume() {
 
         super.onResume();
-        adapter.notifyDataSetChanged();
+        displayExistingLists();
 
     }
     @Override
     public void onRestart() {
 
         super.onRestart();
-        adapter.notifyDataSetChanged();
+        displayExistingLists();
 
     }
 
@@ -177,5 +181,6 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
 
 }

@@ -37,7 +37,7 @@ public class Reminder extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.reminder);
         Date date = new Date();
-        SimpleDateFormat ft = new SimpleDateFormat ("dd.MM.yyyy");
+        SimpleDateFormat ft = new SimpleDateFormat ("dd/MM/yyyy");
         date1 = ft.format(date).toString();
 
         Bundle xtra = getIntent().getExtras();
@@ -157,7 +157,7 @@ public class Reminder extends AppCompatActivity {
         public void populateSetDate(int year, int month, int day) {
 
             String datenow =date1;
-            date1 = month + "." + day + "." + year;
+            date1 = month + "/" + day + "/" + year;
             if(date1.compareTo(datenow)<0){
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setTitle("Warning!");
