@@ -1,17 +1,21 @@
 package com.psu.acc.list_reminder;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -33,9 +37,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.content_main);
 //        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
+        showIdentity();
 
         Button bAddList = (Button) findViewById(R.id.bAddList);
-
         bAddList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -212,6 +216,55 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    /*The help function*/
+    private void showIdentity() {
+
+        // get parent and overlay layouts, use inflator to parse
+        // layout.xml to view component. Reuse existing instance if one is found.
+        ViewGroup parent = (ViewGroup)findViewById(R.id.mainlayout);
+        View identity = findViewById(R.id.identitylayout);
+        if (identity==null) {
+            LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            identity = inflater.inflate(R.layout.identity, parent, false);
+            parent.addView(identity);
+        }
+
+//        TextView text = (TextView)identity.findViewById(R.id.identityview);
+//        identity.bringToFront();
+//        Button bOk =(Button) identity.findViewById(R.id.bOk);
+//        identity.bringToFront();
+//        final View finalIdentity = identity;
+//        bOk.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                ((ViewGroup) finalIdentity.getParent()).removeView(finalIdentity);
+//            }
+//        });
+
+        ImageView iv =(ImageView) identity.findViewById(R.id.image);
+        identity.bringToFront();
+        final View finalIdentity = identity;
+        iv.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                ((ViewGroup) finalIdentity.getParent()).removeView(finalIdentity);
+            }
+        });
+//        // use timer to hide after timeout, make sure there's only
+//        // one instance in a message queue.
+//        Runnable identityTask = new Runnable(){
+//            @Override public void run() {
+//                View identity = findViewById(R.id.identitylayout);
+//                if (identity!=null)
+//                    ((ViewGroup)identity.getParent()).removeView(identity);
+//            }
+//        };
+//        messageHandler.removeCallbacksAndMessages("identitytask");
+//        messageHandler.postAtTime(identityTask, "identitytask", SystemClock.uptimeMillis()+duration);
     }
 
 
