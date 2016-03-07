@@ -1,5 +1,7 @@
 package com.psu.acc.list_reminder;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -21,8 +23,9 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseHelper databaseHelper;
     ArrayList<String> listNames;
     List<String> existingLists;
-    //ListAdapter adapter;
+//    ListAdapter adapter;
     ArrayAdapter<String> adapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,13 +126,13 @@ public class MainActivity extends AppCompatActivity {
     private void displayExistingLists() {
         if (databaseHelper.getAllListNames().size() != 0) {
 
-//            listNames = new ArrayList<>(databaseHelper.getAllListNames());
+            listNames = new ArrayList<>(databaseHelper.getAllListNames());
 //            adapter = new ListAdapter(this,listNames,databaseHelper);
-//            existingListsView.setAdapter(adapter);
+            existingListsView.setAdapter(adapter);
             existingLists = databaseHelper.getAllListNames();
-
-            for (String list : existingLists)
-                System.out.println(list);
+//
+//            for (String list : existingLists)
+//                System.out.println(list);
             adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, android.R.id.text1, existingLists);
             existingListsView.setAdapter(adapter);
 
@@ -143,6 +146,33 @@ public class MainActivity extends AppCompatActivity {
                             Intent i =new Intent(getApplicationContext(),ViewListActivity.class);
                             i.putExtra("listname", itemValue);
                             startActivity(i);
+                        }
+                    });
+                    existingListsView.setOnItemLongClickListener( new AdapterView.OnItemLongClickListener() {
+                        @Override
+                        public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+                                                       int pos, long id) {
+                            // TODO Auto-generated method stub
+                            final String  listname    = (String) existingListsView.getItemAtPosition(pos);
+                            System.out.print("++++++++++++++++++++"+listname);
+                            final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                            builder.setMessage("Do you really want to delete the list "+listname+" ?.")
+                                    .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+
+                                        }
+                                    })
+                                    .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            databaseHelper.removeList(listname);
+                                            displayExistingLists();
+                                        }
+                                    });
+                            AlertDialog alert = builder.create();
+                            alert.show();
+
+
+                            return true;
                         }
                     });
         }

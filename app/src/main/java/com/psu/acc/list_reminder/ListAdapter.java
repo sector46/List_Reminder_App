@@ -2,6 +2,7 @@ package com.psu.acc.list_reminder;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 /**
  * Created by chandhnikannatintavida on 3/1/16.
  */
-public class ListAdapter extends BaseAdapter {
+public class ListAdapter extends BaseAdapter{
 
     Context context;
     ArrayList<String> data;
@@ -72,6 +73,13 @@ public class ListAdapter extends BaseAdapter {
             public void onClick(View v) {
 
                 itemValue = (String) data.get(position);
+//                Intent i =new Intent(context,ViewListActivity.class);
+//                i.putExtra("listname", itemValue);
+//                i.putExtra("calling_class", "false");
+//                startActivity(i);
+                Trial t = new Trial();
+                t.callMain(context);
+
                 //trial....
                 //ViewListActivity vl = new ViewListActivity();
                 //vl.ViewActivity(v.getContext(),data.get(position).toString());
@@ -121,6 +129,16 @@ public class ListAdapter extends BaseAdapter {
             view = (RelativeLayout) listView.getChildAt(i);
             button = (ImageButton) view.findViewById(R.id.delete_item_button);
             button.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    public class Trial extends AppCompatActivity{
+        public void callMain(Context context){
+//            Intent i =new Intent(context,ViewListActivity.class);
+//            i.putExtra("listname", itemValue);
+//            i.putExtra("calling_class", "false");
+//            startActivity(i);
+
         }
     }
 
