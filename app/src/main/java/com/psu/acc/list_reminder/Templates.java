@@ -49,6 +49,7 @@ public class Templates extends AppCompatActivity {
                 String  itemValue    = (String) list.getItemAtPosition(position);
                 Intent i =new Intent(getApplicationContext(),ViewListActivity.class);
                 i.putExtra("listname", itemValue);
+                i.putExtra("calling_class", "true");
                 startActivity(i);
                 finish();
 

@@ -46,6 +46,7 @@ public class ViewListActivity extends Activity {
     private HashMap<String,String> map;
 
     static final int REQUEST_REMSET = 1;
+    Boolean callingClass =false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +74,9 @@ public class ViewListActivity extends Activity {
 
                 list = databaseHelper.getList(listName);
             }
+            if (xtra.getString("calling_class")!= null) {
+                callingClass =true;
+            }
         }
 
         /***** Object Creation (in case you've clicked New at Main Activity) *****/
@@ -89,7 +93,13 @@ public class ViewListActivity extends Activity {
         //If list is null, meaning you've clicked new at MainActivity, instantiate ListObject
         if (list == null)
             list = new ListObject(name, items, reminderDateTime, reminderRecurrence, reminderEnabled);
+
+        //if this activity is called from templates class callingClass will be true and then set listname as blank
+        if(callingClass)
+            titleEditText.setText("");
+        else
         titleEditText.setText(list.getListName());
+
 
         reminderTextView.setText(list.getReminderDateTime());
         if (list.getReminderEnabled().equals("true")) {
