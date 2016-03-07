@@ -12,7 +12,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -71,7 +70,7 @@ public class Reminder extends AppCompatActivity {
         TextView tvDate = (TextView) findViewById(R.id.tvDate);
         TextView tv = (TextView) findViewById(R.id.tvTime);
 
-//        tvDate.setText("DD:MM:YY");
+
         tvDate.setText(date1);
         tv.setText(time1);
 
@@ -103,13 +102,12 @@ public class Reminder extends AppCompatActivity {
             public void onClick(View v) {
                 String name ="set";
                 reminder1 = s.getSelectedItem().toString();
-                Intent intent = new Intent(v.getContext(), ViewListActivity.class);
-                intent.putExtra("set",name);
+
+                Intent intent = getIntent();
                 intent.putExtra("time",time1);
                 intent.putExtra("date",date1);
                 intent.putExtra("reminder",reminder1);
-                intent.putExtra("listname",listName);
-                startActivity(intent);
+                setResult(RESULT_OK,intent);
                 finish();
 
 
@@ -220,15 +218,17 @@ public class Reminder extends AppCompatActivity {
             String AMPM ="am";
             String min;
 
-            if(hourOfDay>=12)
+            if(hourOfDay>12)
             {
+                hourOfDay = hourOfDay -12;
                 AMPM = "pm";
 
-            } else {
-
-                AMPM = "am";
+            }
+            else{
                 if(hourOfDay==0)
-                    hourOfDay=12;
+                    hourOfDay =12;
+                else if(hourOfDay==12)
+                    AMPM="pm";
             }
             if(minute<10){
                 min= "0"+minute;
@@ -246,6 +246,8 @@ public class Reminder extends AppCompatActivity {
             tv.setText(String.valueOf(hourOfDay) + " : "
                     + min + " " + AMPM);
         }
+
+
     }
 
 

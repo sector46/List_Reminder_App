@@ -45,6 +45,8 @@ public class ViewListActivity extends Activity {
     private ArrayList<String> strike;
     private HashMap<String,String> map;
 
+    static final int REQUEST_REMSET = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,12 +72,6 @@ public class ViewListActivity extends Activity {
                 // Create ListObject with the list retrieved from DB
 
                 list = databaseHelper.getList(listName);
-            }
-            if (xtra.getString("date")!=null && xtra.getString("time")!=null){
-                String reminder = xtra.getString("date") + " "+xtra.getString("time") +
-                                  " - " + xtra.getString("reminder");
-                reminderTextView.setText(reminder);
-                //reminderTextView.
             }
         }
 
@@ -107,14 +103,6 @@ public class ViewListActivity extends Activity {
         adapter = new ItemAdapter(this, itemNames, strike);
         listView.setAdapter(adapter);
 
-        if (xtra!=null) {
-            if (xtra.getString("date")!=null && xtra.getString("time")!=null) {
-                reminderTextView.setText(xtra.getString("date") + " " + xtra.getString("time") +
-                                         " - " + xtra.getString("reminder"));
-                list.setReminderDateTime(xtra.getString("date") + " " + xtra.getString("time") +
-                                         " - " + xtra.getString("reminder"));
-            }
-        }
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
@@ -155,47 +143,8 @@ public class ViewListActivity extends Activity {
                         addItemEditText.setVisibility(View.INVISIBLE);
                         doneButton.setText(R.string.edit_list_button);
                        setList();
-                        // list population
 
-//                        map = new HashMap<String,String>();
-//                        itemNames = adapter.getNames();
-//                        strike = adapter.getStrikes();
-//                        if(itemNames.size() == strike.size()){
-//                            for(int index = 0; index < itemNames.size(); index++){
-//                                map.put(itemNames.get(index), strike.get(index));
-//                            }
-//                        }
-//                        list.setListItems(map);
-//                        list.setReminderDateTime(reminderTextView.getText().toString());
-//                        if (enableReminderCheckBox.isChecked()) {
-//                            list.setReminderEnabled("true");
-//                        } else {
-//                            reminderTextView.setVisibility(View.INVISIBLE);
-//                            list.setReminderEnabled("false");
-//                        }
-//                    System.out.print("+++++++++"+titleEditText.getText().toString());
-//                    if(titleEditText.getText().toString().equals("")){
-//
-//                        Toast.makeText(ViewListActivity.this, "You have not entered a Title for the list.Please enter a Title!",
-//                                Toast.LENGTH_SHORT).show();
-//                        list.setListName("Test Title");
-//
-//                    }else if(checkedTitle()){
-//                        list.setListName(titleEditText.getText().toString());
-//                        databaseHelper.updateList(list);
-//                        editMode = false;
-//                    }
-//                    else if (!checkedTitle()){
-//
-//                        Toast.makeText(ViewListActivity.this, "'" + list.getListName() + "' is already in the taken.Please enter a new Title!",
-//                                Toast.LENGTH_SHORT).show();
-//
-//                    }
-                        //TO DO: Repopulate items of the list onto the ListObject
-                        // Update list with new object
-                       // databaseHelper.updateList(list);
-                      //  editMode = false;
-//                    }
+
                 } else {
                     adapter.setVisible(listView);
                     editReminderButton.setVisibility(View.VISIBLE);
@@ -207,6 +156,7 @@ public class ViewListActivity extends Activity {
                     reminderTextView.setVisibility(View.VISIBLE);
                     editMode = true;
 
+
                 }
 
             }
@@ -215,12 +165,23 @@ public class ViewListActivity extends Activity {
         editReminderButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setList();
                 Intent intent = new Intent(v.getContext(), Reminder.class);
-                intent.putExtra("listname", list.getListName());
-                startActivity(intent);
+                startActivityForResult(intent, REQUEST_REMSET);
+
             }
         });
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+            super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            reminderTextView.setText(data.getStringExtra("date") + " " + data.getStringExtra("time") +
+                            " - " + data.getStringExtra("reminder"));
+                    list.setReminderDateTime(data.getStringExtra("date") + " " + data.getStringExtra("time") +
+                            " - " + data.getStringExtra("reminder"));
+               }
+
     }
 
     boolean checkedTitle() {
