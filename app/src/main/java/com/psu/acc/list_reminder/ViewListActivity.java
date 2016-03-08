@@ -82,6 +82,7 @@ public class ViewListActivity extends Activity {
         }
 
         /***** Object Creation (in case you've clicked New at Main Activity) *****/
+        String listID = databaseHelper.generateID();
         String name = "";
         HashMap<String, String> items = new HashMap<String, String>();
 //        items.put("Milk", "false");
@@ -94,7 +95,7 @@ public class ViewListActivity extends Activity {
 
         //If list is null, meaning you've clicked new at MainActivity, instantiate ListObject
         if (list == null)
-            list = new ListObject(name, items, reminderDateTime, reminderRecurrence, reminderEnabled);
+            list = new ListObject(listID, name, items, reminderDateTime, reminderRecurrence, reminderEnabled);
 
         //if this activity is called from templates class callingClass will be true and then set listname as blank
         if(callingClass)
@@ -147,7 +148,8 @@ public class ViewListActivity extends Activity {
             @Override
             public void onClick(View view) {
                 if (editMode == true) {
-//                    if (checkedTitle()) {
+                    if (setList()) {
+                        Log.i("Edit Mode: ", "Turning off Edit Mode");
                         adapter.setInvisible(listView);
                         editReminderButton.setVisibility(View.INVISIBLE);
                         addItemConfirmationButton.setVisibility(View.INVISIBLE);
@@ -155,14 +157,19 @@ public class ViewListActivity extends Activity {
                         titleEditText.setFocusable(false);
                         addItemEditText.setVisibility(View.INVISIBLE);
                         doneButton.setText(R.string.edit_list_button);
-                       setList();
-
+                        if(!enableReminderCheckBox.isChecked()) {
+                            reminderTextView.setVisibility(View.INVISIBLE);
+                        }
+                        editMode = false;
+                    }
 
                 } else {
+                    Log.i("Edit Mode: ", "Turning on Edit Mode");
                     adapter.setVisible(listView);
                     editReminderButton.setVisibility(View.VISIBLE);
                     addItemConfirmationButton.setVisibility(View.VISIBLE);
                     enableReminderCheckBox.setVisibility(View.VISIBLE);
+                    titleEditText.setFocusableInTouchMode(true);
                     titleEditText.setFocusable(true);
                     addItemEditText.setVisibility(View.VISIBLE);
                     doneButton.setText(R.string.done_button);
@@ -211,9 +218,6 @@ public class ViewListActivity extends Activity {
 
     void setButton() {
         ArrayList<String> items = new ArrayList<String>(list.getListItems().keySet());
-        for(int i=0; i<items.size(); i++) {
-            Log.i("items values: ", items.get(i));
-        }
         int count = items.size();
         boolean isUnique = true;
         String text = addItemEditText.getText().toString();
@@ -238,7 +242,9 @@ public class ViewListActivity extends Activity {
         }
         addItemEditText.setText("");
     }
-    public void setList(){
+    public boolean setList(){
+        String reminderEnabled;
+        String listName = titleEditText.getText().toString();
         map = new HashMap<String,String>();
         itemNames = adapter.getNames();
         strike = adapter.getStrikes();
@@ -247,25 +253,30 @@ public class ViewListActivity extends Activity {
                 map.put(itemNames.get(index), strike.get(index));
             }
         }
-        list.setListItems(map);
-        list.setReminderDateTime(reminderTextView.getText().toString());
         if (enableReminderCheckBox.isChecked()) {
-            list.setReminderEnabled("true");
+            reminderEnabled = "true";
+        //    list.setReminderEnabled("true");
         } else {
-            reminderTextView.setVisibility(View.INVISIBLE);
-            list.setReminderEnabled("false");
+            reminderEnabled = "false";
+        //    list.setReminderEnabled("false");
         }
-        System.out.print("+++++++++"+titleEditText.getText().toString());
-        if(titleEditText.getText().toString().equals("")){
-
-            Toast.makeText(ViewListActivity.this, "You have not entered a Title for the list.Please enter a Title!",
+        if(listName.equals("")){
+            Toast.makeText(ViewListActivity.this, "You have not entered a Title for the list. Please enter a Title!",
                     Toast.LENGTH_SHORT).show();
-            list.setListName("Test Title");
+            return false;
 
-        }else {
-            list.setListName(titleEditText.getText().toString());
+        } else if(databaseHelper.isNameInUse(list.getListID(), listName)) {
+            Toast.makeText(ViewListActivity.this, "That list name is already used by another list!",
+                    Toast.LENGTH_SHORT).show();
+            return false;
+
+        } else {
+            list.setListName(listName);
+            list.setListItems(map);
+            list.setReminderDateTime(reminderTextView.getText().toString());
+            list.setReminderEnabled(reminderEnabled);
             databaseHelper.updateList(list);
-            editMode = false;
+            return true;
         }
     }
 

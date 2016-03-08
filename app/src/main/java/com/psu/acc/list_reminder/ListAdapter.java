@@ -25,14 +25,16 @@ public class ListAdapter extends BaseAdapter{
     private DatabaseHelper databaseHelper;
     private static LayoutInflater inflater = null;
     ListView listView;
+    private ListObject list;
     public String itemValue;
 
 
 
-    public ListAdapter(Context context, ArrayList<String> data , DatabaseHelper db){
+    public ListAdapter(Context context, ArrayList<String> data , DatabaseHelper db, ListObject list){
         // TODO Auto-generated constructor stub
         this.context = context;
         this.data = data;
+        this.list = list;
 
         inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -94,9 +96,9 @@ public class ListAdapter extends BaseAdapter{
             @Override
             public void onClick(View view) {
 
-                Log.d("data selected----+", data.get(position).toString());
+                Log.d("data selected----+", data.get(position));
                 Log.d("position selected----+", String.valueOf(position));
-                databaseHelper.removeList(data.get(position).toString());
+                databaseHelper.removeItemFromList(list.getListID(), data.get(position));
                 data.remove(position);
                 notifyDataSetChanged();
 

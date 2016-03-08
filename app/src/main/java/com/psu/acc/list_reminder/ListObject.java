@@ -6,6 +6,9 @@ import java.util.Map;
  * Created by caseybowman on 2/15/16.
  */
 public class ListObject {
+
+    //ID of the list
+    private String listID;
     //Name of the list
     private String listName;
     // Value for the key is "true" if item is struck off list and "false" by default.
@@ -23,13 +26,15 @@ public class ListObject {
 
     /**
      * Constructor.
+     * @param listID ID of the list
      * @param listName name of the list
      * @param listItems map containing item names and their status
      * @param reminderDateTime date and time of the reminder
      * @param reminderRecurrence recurrence set for the reminder
      * @param reminderEnabled is reminder enabled
      */
-    ListObject(String listName, Map<String, String> listItems, String reminderDateTime, String reminderRecurrence, String reminderEnabled) {
+    ListObject(String listID, String listName, Map<String, String> listItems, String reminderDateTime, String reminderRecurrence, String reminderEnabled) {
+        this.listID = listID;
         this.listName = listName;
         this.listItems = listItems;
         this.reminderDateTime = reminderDateTime;
@@ -39,12 +44,18 @@ public class ListObject {
 
     // for importing lists
     ListObject(ListObject list) {
+        this.listID = list.getListID();
         this.listName = list.getListName();
         this.listItems = list.getListItems();
         this.reminderDateTime = list.getReminderDateTime();
         this.reminderRecurrence = list.getReminderRecurrence();
         this.reminderEnabled = list.getReminderEnabled();
     }
+
+    //Getting and setting listID
+    public String getListID() { return listID; }
+
+    public void setListID(String listID) { this.listID = listID; }
 
     //Getter and setter for list name
     public String getListName() {
