@@ -75,7 +75,9 @@ public class ViewListActivity extends Activity {
                 list = databaseHelper.getList(listName);
             }
             if (xtra.getString("calling_class")!= null) {
-                callingClass =true;
+                if(xtra.getString("calling_class")=="true")
+                    callingClass =true;
+
             }
         }
 
@@ -99,7 +101,7 @@ public class ViewListActivity extends Activity {
         if(callingClass)
             titleEditText.setText("");
         else
-        titleEditText.setText(list.getListName());
+            titleEditText.setText(list.getListName());
 
 
         reminderTextView.setText(list.getReminderDateTime());
@@ -139,6 +141,7 @@ public class ViewListActivity extends Activity {
                 return false;
             }
         });
+
 
         doneButton.setOnClickListener(new View.OnClickListener() {
             // enable/disable visibility on views depending on what mode the user is in
