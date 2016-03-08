@@ -209,7 +209,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     /**
      * Removes the specified list from the database.
-     * @param inputID name of the list to be removed
+     * @param inputID ID of the list to be removed
      */
     public void removeList(String inputID) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -218,6 +218,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         //Remove row from lists table for this list.
         db.delete(LISTS_TABLE, LIST_ID + "=?", new String[]{inputID});
     }
+
+    /**
+     * Removes the specified list from the database.
+     * @param name name of the list to be removed
+     */
+    public void removeListByName(String name) {
+        String ID = getListID(name);
+        SQLiteDatabase db = this.getWritableDatabase();
+        //Delete list table containing all the items on that list.
+        db.execSQL("DROP TABLE IF EXISTS " + ID);
+        //Remove row from lists table for this list.
+        db.delete(LISTS_TABLE, LIST_ID + "=?", new String[]{ID});
+    }
+
+
 
     /**
      * Removes a specific item from the list table in the database.
