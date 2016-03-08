@@ -160,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
                             final String  listname    = (String) existingListsView.getItemAtPosition(pos);
                             System.out.print("++++++++++++++++++++"+listname);
                             final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                            builder.setMessage("Do you really want to delete the list "+listname+" ?.")
+                            builder.setMessage("Do you really want to delete the list "+listname+"?")
                                     .setNegativeButton("NO", new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int id) {
 
@@ -168,8 +168,10 @@ public class MainActivity extends AppCompatActivity {
                                     })
                                     .setPositiveButton("YES", new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int id) {
-                                            databaseHelper.removeList(listname);
-                                            displayExistingLists();
+                                            databaseHelper.removeListByName(listname);
+                                            existingLists.remove(listname);
+                                            adapter.notifyDataSetChanged();
+                                           // displayExistingLists();
                                         }
                                     });
                             AlertDialog alert = builder.create();
