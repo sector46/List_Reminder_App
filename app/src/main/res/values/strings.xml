@@ -12,4 +12,7 @@
         <item>Add Item</item>
     </string-array>
     <string name="add_item">Add Item...</string>
+    <string name="notificationtitle">Lists 4 Later Reminder</string>
+    <string name="lbltitle">" "</string>
+    <string name="lbltext">" "</string>
 </resources>

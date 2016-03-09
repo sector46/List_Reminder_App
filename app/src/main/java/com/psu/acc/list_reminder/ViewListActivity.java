@@ -117,7 +117,7 @@ public class ViewListActivity extends Activity {
         if (list.getReminderTime().equals("None") && list.getReminderDate().equals("None")) {
             reminderTextView.setText("No reminder is set");
         } else {
-            reminderTextView.setText(list.getReminderDate() + " " + list.getReminderTime());
+            reminderTextView.setText(list.getReminderDate() + " " + list.getReminderTime() + " - " + list.getReminderRecurrence());
         }
         if (list.getReminderEnabled().equals("true")) {
             enableReminderCheckBox.setChecked(true);
@@ -252,10 +252,10 @@ public class ViewListActivity extends Activity {
         if (resultCode == Activity.RESULT_OK) {
             reminderTextView.setText(data.getStringExtra("date") + " " + data.getStringExtra("time") +
                     " - " + data.getStringExtra("reminder"));
-                    list.setReminderDate(data.getStringExtra("date"));
-                    list.setReminderTime(data.getStringExtra("time"));
-                    list.setReminderRecurrence(data.getStringExtra("reminder"));
-               }
+            list.setReminderDate(data.getStringExtra("date"));
+            list.setReminderTime(data.getStringExtra("time"));
+            list.setReminderRecurrence(data.getStringExtra("reminder"));
+        }
 
     }
 

@@ -38,7 +38,7 @@ public class Reminder extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.reminder);
         Date date = new Date();
-        SimpleDateFormat ft = new SimpleDateFormat ("dd/MM/yyyy");
+        SimpleDateFormat ft = new SimpleDateFormat ("M/d/yyyy");
         date1 = ft.format(date).toString();
 
         Bundle xtra = getIntent().getExtras();
@@ -49,7 +49,7 @@ public class Reminder extends AppCompatActivity {
         }
 
 
-        SimpleDateFormat ft1 = new SimpleDateFormat ("hh:mm a");
+        SimpleDateFormat ft1 = new SimpleDateFormat ("h:mma");
         time1 = ft1.format(date).toString();
 
         //repeat alarm...
@@ -69,7 +69,6 @@ public class Reminder extends AppCompatActivity {
         s.setAdapter(adapter);
         TextView tvDate = (TextView) findViewById(R.id.tvDate);
         TextView tv = (TextView) findViewById(R.id.tvTime);
-
 
         tvDate.setText(date1);
         tv.setText(time1);
@@ -160,7 +159,8 @@ public class Reminder extends AppCompatActivity {
 
             String datenow =date1;
             date1 = month + "/" + day + "/" + year;
-            if(date1.compareTo(datenow)<0){
+
+            if(date1.compareTo(datenow)<0) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setTitle("Warning!");
                 builder.setMessage("The date you selected is a past date.Please select the current date or a future one.!")
@@ -172,21 +172,16 @@ public class Reminder extends AppCompatActivity {
                         });
                 AlertDialog alert = builder.create();
                 alert.show();
-
             }
-            else{
-
-            TextView tvDate = (TextView) findViewById(R.id.tvDate);
-            tvDate.setText(date1);
+            else {
+                TextView tvDate = (TextView) findViewById(R.id.tvDate);
+                tvDate.setText(date1);
             }
         }
 
         @Override
         public void onDateSet(android.widget.DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-
-
             populateSetDate(year, monthOfYear + 1, dayOfMonth);
-
         }
     }
 
@@ -215,20 +210,20 @@ public class Reminder extends AppCompatActivity {
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
             // Do something with the time chosen by the user
 
-            String AMPM ="am";
+            String AMPM ="AM";
             String min;
 
             if(hourOfDay>12)
             {
                 hourOfDay = hourOfDay -12;
-                AMPM = "pm";
+                AMPM = "PM";
 
             }
             else{
                 if(hourOfDay==0)
                     hourOfDay =12;
                 else if(hourOfDay==12)
-                    AMPM="pm";
+                    AMPM="PM";
             }
             if(minute<10){
                 min= "0"+minute;
@@ -241,10 +236,10 @@ public class Reminder extends AppCompatActivity {
             //Set a message for user
             TextView tv = (TextView) findViewById(R.id.tvTime);
             //Display the user changed time on TextView
-            time1 = String.valueOf(hourOfDay)+" : "
-                    + min+" "+ AMPM;
-            tv.setText(String.valueOf(hourOfDay) + " : "
-                    + min + " " + AMPM);
+            time1 = String.valueOf(hourOfDay)+":"
+                    + min+ AMPM;
+            tv.setText(String.valueOf(hourOfDay) + ":"
+                    + min + AMPM);
         }
 
 

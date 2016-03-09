@@ -3,18 +3,16 @@ package com.psu.acc.list_reminder;
 import android.app.AlarmManager;
 import android.app.IntentService;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
-import android.os.IBinder;
-import android.support.annotation.Nullable;
-import android.widget.Toast;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by ARavi1 on 3/7/2016.
@@ -22,7 +20,7 @@ import java.util.List;
 public class DatabasePollingService extends IntentService{
 
     DatabaseHelper databaseHelper;
-   /**
+    /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
      *
      */
@@ -36,58 +34,94 @@ public class DatabasePollingService extends IntentService{
         pollDataBase();
     }
 
-    private void pollDataBase(){
-        while(true){
-            databaseHelper = DatabaseHelper.getInstance(DatabasePollingService.this);
-            SQLiteDatabase db = databaseHelper.getWritableDatabase();
+    private void pollDataBase() {
+        Date current = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("ss");
+        long delayInSeconds = 1000 * (60 - Integer.parseInt(formatter.format(current)));
+        Timer timer = new Timer();
+        TimerTask everyMinuteTask = new TimerTask() {
+            @Override
+            public void run() {
+                databaseHelper = DatabaseHelper.getInstance(DatabasePollingService.this);
 
-            List<String> storedListIds = databaseHelper.getAllListIDs();
-            for(String listId: storedListIds)
-            {
-                ListObject list = databaseHelper.getList(listId);
-                if(Boolean.getBoolean(list.getReminderEnabled())){
-                    String reminderDate = list.getReminderDate();
-                    String reminderTime = list.getReminderTime();
-                    Date currentDateTime = new Date();
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
-                    String dateToStr = dateFormat.format(currentDateTime);
-                    System.out.println(dateToStr);
+                List<String> storedListIds = databaseHelper.getAllListIDs();
+                for (String listId : storedListIds) {
+                    ListObject list = databaseHelper.getList(listId);
+                    if (list.getReminderEnabled().equalsIgnoreCase("true")) {
+                        //Get current date time for comparison
+                        Date currentDateTime = new Date();
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("M/d/yyyy h:mma");
+                        String currentDateTimeStr = dateFormat.format(currentDateTime);
+                        //Build list's date and time
+                        StringBuilder reminderDateTime = new StringBuilder(list.getReminderDate());
+                        reminderDateTime.append(" ").append(list.getReminderTime());
+                        System.out.println("Find difference between " + currentDateTimeStr + " and " + reminderDateTime + " for list " + list.getListName());
+                        //Find differences between 2 timestamps
+                        TimeBetweenTwoTimestamps differenceInTime = null;
+                        try {
+                            differenceInTime = calculateDifferenceBetweenTimeStamps(
+                                    dateFormat.parse(currentDateTimeStr), dateFormat.parse(reminderDateTime.toString()));
+                        } catch (ParseException e){
+                            e.printStackTrace();
+                        }
+                        if (differenceInTime!=null) {
+                            differenceInTime.displayDifferenceInTime();
+                            if (reminderDateTime.toString().equalsIgnoreCase(currentDateTimeStr)) {
+                                triggerAlarm(list.getListName());
+                                //Disable reminder
+                                list.setReminderEnabled("false");
+                                databaseHelper.updateList(list);
+                            } else if (list.getReminderRecurrence().equalsIgnoreCase("daily")) {
+                                if (differenceInTime.oneOrMoreDayDifference())
+                                    triggerAlarm(list.getListName());
 
-
-                    // TODO: check if current minute is the same as the reminder time
-
-                    triggerAlarm();
+                            } else if (list.getReminderRecurrence().equalsIgnoreCase("weekly")) {
+                                if (differenceInTime.oneOrMoreWeeksDifference())
+                                    triggerAlarm(list.getListName());
+                            } else if (list.getReminderRecurrence().equalsIgnoreCase("monthly")) {
+                                if (differenceInTime.oneOrMoreMonthsDifference())
+                                    triggerAlarm(list.getListName());
+                            }
+                        }
+                    }
                 }
             }
-            try {
-                Thread.sleep(60000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+        };
+        timer.schedule(everyMinuteTask, delayInSeconds, 1000*60);
     }
 
-    private boolean triggerAlarm() {
-        // time at which alarm will be scheduled here alarm is scheduled at 1 day from current time,
-        // we fetch  the current time in milliseconds and added 1 day time
-        // i.e. 24*60*60*1000= 86,400,000   milliseconds in a day
-        Long time = new GregorianCalendar().getTimeInMillis()+30*1000;
+    private boolean triggerAlarm(String listName) {
+        // Time at which alarm will be scheduled, when current time equals reminder set for a list.
+        Long time = new GregorianCalendar().getTimeInMillis();
 
-        System.out.println("Time in long " + time);
-
-        // create an Intent and set the class which will execute when Alarm triggers, here we have
-        // given AlarmReceiver in the Intent, the onRecieve() method of this class will execute when
-        // alarm triggers and
-        //we will write the code to send SMS inside onRecieve() method pf Alarmreciever class
+        /* Create an Intent and set the class which will execute the onRecieve() method when Alarm triggers. */
         Intent intentAlarm = new Intent(this, AlarmReceiver.class);
+        intentAlarm.putExtra("LIST_NAME", listName);
 
-        // create the object
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-
-        //set the alarm for particular time
+        //Set the alarm for now
         alarmManager.set(AlarmManager.RTC_WAKEUP, time, PendingIntent.getBroadcast(this, 1, intentAlarm, PendingIntent.FLAG_UPDATE_CURRENT));
-        Toast.makeText(this, "Alarm Scheduled for Tomorrow", Toast.LENGTH_LONG).show();
-        System.out.println("Set the alarm ");
         return true;
     }
+
+    public static TimeBetweenTwoTimestamps calculateDifferenceBetweenTimeStamps(Date currentTime, Date listTime) {
+        TimeBetweenTwoTimestamps timeDifference = new TimeBetweenTwoTimestamps();
+        timeDifference.setCurrentDate(currentTime);
+        timeDifference.setListDate(listTime);
+        long diff = currentTime.getTime() - listTime.getTime();
+
+        long diffSeconds = diff / 1000 % 60;
+        long diffMinutes = diff / (60 * 1000) % 60;
+        long diffHours = diff / (60 * 60 * 1000) % 24;
+        long diffDays = diff / (24 * 60 * 60 * 1000);
+
+        timeDifference.setDifferenceInDays(diffDays);
+        timeDifference.setDifferenceInHours(diffHours);
+        timeDifference.setDifferenceInMinutes(diffMinutes);
+        timeDifference.setDifferenceInSeconds(diffSeconds);
+
+        return timeDifference;
+
+    }
+
 }

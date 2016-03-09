@@ -24,9 +24,8 @@
         <activity android:name=".ViewListActivity"/>
         <uses-permission android:name="com.android.alarm.permission.SET_ALARM"/>
         <receiver android:name=".AlarmReceiver"/>
-        <service
-            android:name=".DatabasePollingService"
-            android:exported="false"/>
+        <service android:name=".DatabasePollingService" android:exported="false"/>
+        <activity android:name=".NotificationView" />
     </application>
 
 </manifest>
