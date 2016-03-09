@@ -72,11 +72,11 @@ public class MainActivity extends AppCompatActivity {
             existingLists = databaseHelper.getAllListNames();
 
             Collections.sort(existingLists);
-            for (String list : existingLists) {
+            /*for (String list : existingLists) {
                 String listID = databaseHelper.getListID(list);
                 ListObject listObject = databaseHelper.getList(listID);
                 listObject.displayList();
-            }
+            }*/
 //
 //            for (String list : existingLists)
 //                System.out.println(list);
