@@ -98,8 +98,12 @@ public class ItemAdapter extends BaseAdapter {
         });
         if (ViewListActivity.getEditMode() == true) {
             relLayout.setClickable(false);
+            ImageButton button = (ImageButton) relLayout.findViewById(R.id.delete_item_button);
+            button.setVisibility(View.VISIBLE);
         } else {
             relLayout.setClickable(true);
+            ImageButton button = (ImageButton) relLayout.findViewById(R.id.delete_item_button);
+            button.setVisibility(View.INVISIBLE);
         }
         final ImageButton deleteItemButton = (ImageButton) vi.findViewById(R.id.delete_item_button);
         deleteItemButton.setOnClickListener(new View.OnClickListener() {
@@ -141,7 +145,7 @@ public class ItemAdapter extends BaseAdapter {
     }
 
     public void setVisible() {
-        int listLength = getCount();
+        int listLength = listView.getChildCount(); //getCount();
         RelativeLayout view;
         ImageButton button;
         for (int i=0; i<listLength; i++) {
@@ -152,7 +156,7 @@ public class ItemAdapter extends BaseAdapter {
     }
 
     public void setInvisible() {
-        int listLength = getCount();
+        int listLength = listView.getChildCount(); //getCount();
         RelativeLayout view;
         ImageButton button;
         for (int i=0; i<listLength; i++) {
@@ -163,7 +167,7 @@ public class ItemAdapter extends BaseAdapter {
     }
 
     public void setUnclickable() {
-        int listLength = getCount();
+        int listLength = listView.getChildCount(); //getCount();
         RelativeLayout view;
         for (int i=0; i<listLength; i++) {
             view = (RelativeLayout) listView.getChildAt(i);
@@ -172,7 +176,7 @@ public class ItemAdapter extends BaseAdapter {
     }
 
     public void setClickable() {
-        int listLength = getCount();
+        int listLength = listView.getChildCount(); //getCount();
         RelativeLayout view;
         for (int i=0; i<listLength; i++) {
             view = (RelativeLayout) listView.getChildAt(i);
