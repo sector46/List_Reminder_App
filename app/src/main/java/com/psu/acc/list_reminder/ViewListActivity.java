@@ -36,7 +36,6 @@ public class ViewListActivity extends Activity {
     private EditText addItemEditText;
     private TextView reminderTextView;
 
-    private boolean editMode = true;
     private ItemAdapter adapter;
     private DatabaseHelper databaseHelper;
     private ListObject list;
@@ -48,11 +47,15 @@ public class ViewListActivity extends Activity {
     static final int REQUEST_REMSET = 1;
     Boolean callingClass =false;
 
+    private static boolean editMode;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_list);
         Bundle xtra = getIntent().getExtras();
+
+        editMode = true;
 
         doneButton             = (Button) findViewById(R.id.done_button);
         listView               = (ListView) findViewById(R.id.item_list);
@@ -75,9 +78,14 @@ public class ViewListActivity extends Activity {
                 list = databaseHelper.getList(id);
             }
             if (xtra.getString("calling_class")!= null) {
-                if(xtra.getString("calling_class")=="true")
+                if(xtra.getString("calling_class").equals("true"))
                     callingClass =true;
 
+            }
+            if (xtra.getString("main_menu")!= null) {
+                if(xtra.getString("main_menu").equals("true"))
+                    Log.i("EditMode = ", "False!");
+                    editMode = false;
             }
         }
 
@@ -99,10 +107,12 @@ public class ViewListActivity extends Activity {
             list = new ListObject(listID, name, items, reminderDate, reminderTime, reminderRecurrence, reminderEnabled);
 
         //if this activity is called from templates class callingClass will be true and then set listname as blank
-        if(callingClass)
+        if(callingClass) {
+            list.setListID(listID);
             titleEditText.setText("");
-        else
+        } else {
             titleEditText.setText(list.getListName());
+        }
 
         if (list.getReminderTime().equals("None") && list.getReminderDate().equals("None")) {
             reminderTextView.setText("No reminder is set");
@@ -117,10 +127,23 @@ public class ViewListActivity extends Activity {
         itemNames = new ArrayList<>(list.getListItems().keySet());
         strike = new ArrayList<>(list.getListItems().values());
 
-        adapter = new ItemAdapter(this, itemNames, strike);
+        adapter = new ItemAdapter(this, list, itemNames, strike, databaseHelper);
         listView.setAdapter(adapter);
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
+        enableReminderCheckBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (enableReminderCheckBox.isChecked()) {
+                    Toast.makeText(ViewListActivity.this, "Reminder is ON!",
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(ViewListActivity.this, "Reminder is OFF!",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
         addItemConfirmationButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -153,7 +176,8 @@ public class ViewListActivity extends Activity {
                 if (editMode == true) {
                     if (setList()) {
                         Log.i("Edit Mode: ", "Turning off Edit Mode");
-                        adapter.setInvisible(listView);
+                        adapter.setInvisible();
+                        adapter.setClickable();
                         editReminderButton.setVisibility(View.INVISIBLE);
                         addItemConfirmationButton.setVisibility(View.INVISIBLE);
                         enableReminderCheckBox.setVisibility(View.INVISIBLE);
@@ -168,7 +192,8 @@ public class ViewListActivity extends Activity {
 
                 } else {
                     Log.i("Edit Mode: ", "Turning on Edit Mode");
-                    adapter.setVisible(listView);
+                    adapter.setVisible();
+                    adapter.setUnclickable();
                     editReminderButton.setVisibility(View.VISIBLE);
                     addItemConfirmationButton.setVisibility(View.VISIBLE);
                     enableReminderCheckBox.setVisibility(View.VISIBLE);
@@ -178,8 +203,6 @@ public class ViewListActivity extends Activity {
                     doneButton.setText(R.string.done_button);
                     reminderTextView.setVisibility(View.VISIBLE);
                     editMode = true;
-
-
                 }
 
             }
@@ -193,6 +216,34 @@ public class ViewListActivity extends Activity {
 
             }
         });
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        if (editMode == true) {
+            adapter.setVisible();
+            adapter.setUnclickable();
+            editReminderButton.setVisibility(View.VISIBLE);
+            addItemConfirmationButton.setVisibility(View.VISIBLE);
+            enableReminderCheckBox.setVisibility(View.VISIBLE);
+            titleEditText.setFocusableInTouchMode(true);
+            titleEditText.setFocusable(true);
+            addItemEditText.setVisibility(View.VISIBLE);
+            doneButton.setText(R.string.done_button);
+            reminderTextView.setVisibility(View.VISIBLE);
+        } else {
+            adapter.setInvisible();
+            adapter.setClickable();
+            editReminderButton.setVisibility(View.INVISIBLE);
+            addItemConfirmationButton.setVisibility(View.INVISIBLE);
+            enableReminderCheckBox.setVisibility(View.INVISIBLE);
+            titleEditText.setFocusable(false);
+            addItemEditText.setVisibility(View.INVISIBLE);
+            doneButton.setText(R.string.edit_list_button);
+            if (!enableReminderCheckBox.isChecked()) {
+                reminderTextView.setVisibility(View.INVISIBLE);
+            }
+        }
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -238,6 +289,7 @@ public class ViewListActivity extends Activity {
             if (isUnique) {
                 list.addItemToList(text);
                 adapter.addItem(text);
+              //  adapter.updateViews();
             } else {
                 // add toast "Item name already in list!"
                 Toast.makeText(ViewListActivity.this, "'" + text + "' is already in the list!",
@@ -251,6 +303,7 @@ public class ViewListActivity extends Activity {
         String listName = titleEditText.getText().toString();
         map = new HashMap<String,String>();
         itemNames = adapter.getNames();
+        adapter.getItemLogs();
         strike = adapter.getStrikes();
         if(itemNames.size() == strike.size()){
             for(int index = 0; index < itemNames.size(); index++){
@@ -287,6 +340,10 @@ public class ViewListActivity extends Activity {
             databaseHelper.updateList(list);
             return true;
         }
+    }
+
+    static boolean getEditMode() {
+        return editMode;
     }
 
 }

@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.CollapsibleActionView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,6 +19,9 @@ import android.widget.ImageView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -67,6 +71,16 @@ public class MainActivity extends AppCompatActivity {
 
             existingLists = databaseHelper.getAllListNames();
 
+            Collections.sort(existingLists);
+            for (String list : existingLists) {
+                String listID = databaseHelper.getListID(list);
+                ListObject listObject = databaseHelper.getList(listID);
+                listObject.displayList();
+            }
+//
+//            for (String list : existingLists)
+//                System.out.println(list);
+
             adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, android.R.id.text1, existingLists);
             existingListsView.setAdapter(adapter);
 
@@ -78,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
                             String  itemValue    = (String) existingListsView.getItemAtPosition(position);
                             Intent i =new Intent(getApplicationContext(),ViewListActivity.class);
                             i.putExtra("listname", itemValue);
+                            i.putExtra("main_menu", "true");
                             startActivity(i);
                         }
                     });

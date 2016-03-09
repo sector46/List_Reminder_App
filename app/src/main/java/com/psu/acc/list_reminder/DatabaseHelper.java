@@ -109,9 +109,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // Looping through all rows and adding to list
         if (listsCursor.moveToFirst()) {
             do {
-                String listName = listsCursor.getString(0);
-                // Adding list_name to the list.
-                lists.add(listName);
+                String listID = listsCursor.getString(0);
+                // Adding list_id to the list.
+                lists.add(listID);
             } while (listsCursor.moveToNext());
         }
         listsCursor.close();
@@ -132,7 +132,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // Looping through all rows and adding to list
         if (listsCursor.moveToFirst()) {
             do {
-                String listName = listsCursor.getString(0).replaceAll("_", " ");
+                String listName = listsCursor.getString(0).substring(1, listsCursor.getString(0).length()-1);
+                listName = listName.replaceAll("_", " ");
                 // Adding list_name to the list.
                 lists.add(listName);
             } while (listsCursor.moveToNext());
@@ -142,7 +143,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public String getListID(String listName) {
-        String[] name = new String[]{ listName.replaceAll(" ", "_") };
+        String[] name = new String[]{ "'" + listName.replaceAll(" ", "_") + "'" };
         String listID = "";
         String selectQuery = "SELECT " + LIST_ID + " FROM " + LISTS_TABLE + " WHERE " + LIST_NAME + " =?";
         SQLiteDatabase db = this.getWritableDatabase();
@@ -157,6 +158,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
+     *
+     * @return true if the item strikethrough value was successfully updated in the database and
+     *         false if it failed.
+     */
+    public boolean updateStrike(String listID, String name, String strike) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        name = "'" + name + "'";
+        // Insert list info into the lists_table (all info except list items)
+        ContentValues itemValues = new ContentValues();
+        itemValues.put(ITEM_STATUS, strike); // List name
+
+        String whereClause = ITEM_NAME + "=?";
+
+        // Inserting Row into lists table
+        int status = db.update(listID, itemValues, whereClause, new String[]{name});
+        if (status == 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Add a list to the database.
      * NOTE: Spaces in the list_name are replaced by underscore before insertion to database.
      * @param listObject listObject populated with all its fields.
@@ -166,6 +190,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         String listID = listObject.getListID();
         String listName = listObject.getListName().replaceAll(" ", "_");
+        listName = "'" + listName + "'";
         if (Character.isDigit(listName.charAt(0))) {
             return false;
         } else {
@@ -180,6 +205,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             // Inserting Row into lists table
             db.insert(LISTS_TABLE, null, listValues);
 
+            Log.i("List Name: ", listName);
+
             //Create a table with the list ID to store item name and if its done/struck off (value: true) or incomplete (also, default value: false)
             // SQL statement to create list table to store items on the list.
             String CREATE_NEW_LIST_TABLE = "CREATE TABLE " + listID +
@@ -189,11 +216,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.execSQL(CREATE_NEW_LIST_TABLE);
 
             //Insert items into the list table.
+            String keyStr;
             Map<String, String> items = listObject.getListItems();
             for (String key : items.keySet()) {
+                keyStr = "'" + key + "'";
                 String value = items.get(key);
                 ContentValues ITEM_VALUES = new ContentValues();
-                ITEM_VALUES.put(ITEM_NAME, key); // Item name
+                ITEM_VALUES.put(ITEM_NAME, keyStr); // Item name
                 ITEM_VALUES.put(ITEM_STATUS, value); // Item status
                 db.insert(listID, null, ITEM_VALUES);
             }
@@ -241,6 +270,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * @param itemName name of the item on the list.
      */
     public void removeItemFromList(String listID, String itemName) {
+        itemName = "'" + itemName + "'";
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(listID, ITEM_NAME + "= ?", new String[]{itemName});
     }
@@ -277,7 +307,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         /* Build a list object based on results for that list */
         ListObject listObject = new ListObject();
         String listIDFromDB = listCursor.getString(0);
-        String listNameFromDB = listCursor.getString(1);
+        String listNameFromDB = listCursor.getString(1).substring(1,listCursor.getString(1).length()-1);
+        Log.i("List Name: ", listNameFromDB);
         listObject.setListID(listIDFromDB);
         listObject.setListName(listNameFromDB.replaceAll("_", " "));
         listObject.setReminderDate(listCursor.getString(2));
@@ -293,10 +324,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         Map<String, String> itemsOnList = new HashMap<>();
         // Looping through all rows and adding to list
+        String newStr;
         if (listItemsCursor.moveToFirst()) {
             do {
                 // Adding item to the map of items.
-                itemsOnList.put(listItemsCursor.getString(0), listItemsCursor.getString(1));
+                newStr = listItemsCursor.getString(0).substring(1, listItemsCursor.getString(0).length()-1);
+                itemsOnList.put(newStr, listItemsCursor.getString(1));
             } while (listItemsCursor.moveToNext());
         }
         listItemsCursor.close();
@@ -322,6 +355,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public boolean isNameInUse(String inputID, String name) {
         ArrayList<String> listNames = new ArrayList<String>(getAllListNames());
         String IDFromDB = getListID(name);
+        Log.i("inputID = ", inputID);
+        Log.i("IDFromDB = ", IDFromDB);
         if (listNames.contains(name)) {
             if (IDFromDB.equals(inputID)) {
                 return false;
