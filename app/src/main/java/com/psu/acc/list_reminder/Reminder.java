@@ -241,10 +241,10 @@ public class Reminder extends AppCompatActivity {
             //Set a message for user
             TextView tv = (TextView) findViewById(R.id.tvTime);
             //Display the user changed time on TextView
-            time1 = String.valueOf(hourOfDay)+" : "
-                    + min+" "+ AMPM;
-            tv.setText(String.valueOf(hourOfDay) + " : "
-                    + min + " " + AMPM);
+            time1 = String.valueOf(hourOfDay)+":"
+                    + min+ AMPM;
+            tv.setText(String.valueOf(hourOfDay) + ":"
+                    + min + AMPM);
         }
 
 

@@ -7,10 +7,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by ARavi1 on 3/7/2016.
@@ -41,15 +44,23 @@ public class DatabasePollingService extends IntentService{
             for(String listId: storedListIds)
             {
                 ListObject list = databaseHelper.getList(listId);
-                if(list.getReminderEnabled().equalsIgnoreCase("true")){
-                    StringBuilder reminderDateTime = new StringBuilder(list.getReminderDate());
-                    reminderDateTime.append(" ").append(list.getReminderTime());
+                if(list.getReminderEnabled().equalsIgnoreCase("true")) {
                     //Get current date time for comparison
                     Date currentDateTime = new Date();
                     SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mma");
                     String currentDateTimeStr = dateFormat.format(currentDateTime);
-                    if(reminderDateTime.toString().equals(currentDateTimeStr)){
-                        triggerAlarm(list.getListName());
+                    StringBuilder reminderDateTime = new StringBuilder(list.getReminderDate());
+                    reminderDateTime.append(" ").append(list.getReminderTime());
+                    if (list.getReminderRecurrence().equals("none") && reminderDateTime.toString().equals(currentDateTimeStr)) {
+                            triggerAlarm(list.getListName());
+                    } else if (list.getReminderRecurrence().equals("daily")) {
+                        //TO DO
+                        int hours = hoursAgo(reminderDateTime.toString());
+                        System.out.println(hours);
+                    } else if (list.getReminderRecurrence().equals("weekly")) {
+                        //To DO
+                    } else if (list.getReminderRecurrence().equals("monthly")) {
+                        //To DO
                     }
                 }
             }
@@ -74,4 +85,19 @@ public class DatabasePollingService extends IntentService{
         alarmManager.set(AlarmManager.RTC_WAKEUP, time, PendingIntent.getBroadcast(this, 1, intentAlarm, PendingIntent.FLAG_UPDATE_CURRENT));
         return true;
     }
+
+    public static int hoursAgo(String datetime) {
+        try {
+            Calendar date = Calendar.getInstance();
+            date.setTime(new SimpleDateFormat("dd/MM/yyyy HH:mma", Locale.ENGLISH).parse(datetime)); // Parse into Date object
+            Calendar now = Calendar.getInstance(); // Get time now
+            long differenceInMillis = now.getTimeInMillis() - date.getTimeInMillis();
+            long differenceInHours = (differenceInMillis) / 1000L / 60L / 60L; // Divide by millis/sec, secs/min, mins/hr
+            return (int) differenceInHours;
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
 }
