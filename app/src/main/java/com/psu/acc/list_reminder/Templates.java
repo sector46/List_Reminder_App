@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -31,6 +32,7 @@ public class Templates extends AppCompatActivity {
         // Show previously created lists in ListView
         databaseHelper = DatabaseHelper.getInstance(Templates.this);
         List<String> existingLists = databaseHelper.getAllListNames();
+        Collections.sort(existingLists);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1, android.R.id.text1, existingLists);

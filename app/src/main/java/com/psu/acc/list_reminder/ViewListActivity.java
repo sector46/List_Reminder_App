@@ -78,9 +78,14 @@ public class ViewListActivity extends Activity {
                 list = databaseHelper.getList(id);
             }
             if (xtra.getString("calling_class")!= null) {
-                if(xtra.getString("calling_class")=="true")
+                if(xtra.getString("calling_class").equals("true"))
                     callingClass =true;
 
+            }
+            if (xtra.getString("main_menu")!= null) {
+                if(xtra.getString("main_menu").equals("true"))
+                    Log.i("EditMode = ", "False!");
+                    editMode = false;
             }
         }
 
@@ -102,10 +107,12 @@ public class ViewListActivity extends Activity {
             list = new ListObject(listID, name, items, reminderDate, reminderTime, reminderRecurrence, reminderEnabled);
 
         //if this activity is called from templates class callingClass will be true and then set listname as blank
-        if(callingClass)
+        if(callingClass) {
+            list.setListID(listID);
             titleEditText.setText("");
-        else
+        } else {
             titleEditText.setText(list.getListName());
+        }
 
         if (list.getReminderTime().equals("None") && list.getReminderDate().equals("None")) {
             reminderTextView.setText("No reminder is set");
@@ -183,8 +190,6 @@ public class ViewListActivity extends Activity {
                     doneButton.setText(R.string.done_button);
                     reminderTextView.setVisibility(View.VISIBLE);
                     editMode = true;
-
-
                 }
 
             }
@@ -198,6 +203,34 @@ public class ViewListActivity extends Activity {
 
             }
         });
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        if (editMode == true) {
+            adapter.setVisible();
+            adapter.setUnclickable();
+            editReminderButton.setVisibility(View.VISIBLE);
+            addItemConfirmationButton.setVisibility(View.VISIBLE);
+            enableReminderCheckBox.setVisibility(View.VISIBLE);
+            titleEditText.setFocusableInTouchMode(true);
+            titleEditText.setFocusable(true);
+            addItemEditText.setVisibility(View.VISIBLE);
+            doneButton.setText(R.string.done_button);
+            reminderTextView.setVisibility(View.VISIBLE);
+        } else {
+            adapter.setInvisible();
+            adapter.setClickable();
+            editReminderButton.setVisibility(View.INVISIBLE);
+            addItemConfirmationButton.setVisibility(View.INVISIBLE);
+            enableReminderCheckBox.setVisibility(View.INVISIBLE);
+            titleEditText.setFocusable(false);
+            addItemEditText.setVisibility(View.INVISIBLE);
+            doneButton.setText(R.string.edit_list_button);
+            if (!enableReminderCheckBox.isChecked()) {
+                reminderTextView.setVisibility(View.INVISIBLE);
+            }
+        }
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

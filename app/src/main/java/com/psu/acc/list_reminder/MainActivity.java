@@ -176,6 +176,7 @@ public class MainActivity extends AppCompatActivity {
                             String  itemValue    = (String) existingListsView.getItemAtPosition(position);
                             Intent i =new Intent(getApplicationContext(),ViewListActivity.class);
                             i.putExtra("listname", itemValue);
+                            i.putExtra("main_menu", "true");
                             startActivity(i);
                         }
                     });
