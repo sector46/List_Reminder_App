@@ -71,8 +71,8 @@ public class ViewListActivity extends Activity {
             if (xtra.getString("listname")!= null) {
                 String listName = xtra.getString("listname");
                 // Create ListObject with the list retrieved from DB
-
-                list = databaseHelper.getList(listName);
+                String id = databaseHelper.getListID(listName);
+                list = databaseHelper.getList(id);
             }
             if (xtra.getString("calling_class")!= null) {
                 if(xtra.getString("calling_class")=="true")
