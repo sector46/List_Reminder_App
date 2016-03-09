@@ -36,7 +36,6 @@ public class ViewListActivity extends Activity {
     private EditText addItemEditText;
     private TextView reminderTextView;
 
-    private boolean editMode = true;
     private ItemAdapter adapter;
     private DatabaseHelper databaseHelper;
     private ListObject list;
@@ -48,11 +47,15 @@ public class ViewListActivity extends Activity {
     static final int REQUEST_REMSET = 1;
     Boolean callingClass =false;
 
+    private static boolean editMode;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_list);
         Bundle xtra = getIntent().getExtras();
+
+        editMode = true;
 
         doneButton             = (Button) findViewById(R.id.done_button);
         listView               = (ListView) findViewById(R.id.item_list);
@@ -117,7 +120,7 @@ public class ViewListActivity extends Activity {
         itemNames = new ArrayList<>(list.getListItems().keySet());
         strike = new ArrayList<>(list.getListItems().values());
 
-        adapter = new ItemAdapter(this, itemNames, strike);
+        adapter = new ItemAdapter(this, itemNames, strike, databaseHelper);
         listView.setAdapter(adapter);
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
@@ -153,7 +156,8 @@ public class ViewListActivity extends Activity {
                 if (editMode == true) {
                     if (setList()) {
                         Log.i("Edit Mode: ", "Turning off Edit Mode");
-                        adapter.setInvisible(listView);
+                        adapter.setInvisible();
+                        adapter.setClickable();
                         editReminderButton.setVisibility(View.INVISIBLE);
                         addItemConfirmationButton.setVisibility(View.INVISIBLE);
                         enableReminderCheckBox.setVisibility(View.INVISIBLE);
@@ -168,7 +172,8 @@ public class ViewListActivity extends Activity {
 
                 } else {
                     Log.i("Edit Mode: ", "Turning on Edit Mode");
-                    adapter.setVisible(listView);
+                    adapter.setVisible();
+                    adapter.setUnclickable();
                     editReminderButton.setVisibility(View.VISIBLE);
                     addItemConfirmationButton.setVisibility(View.VISIBLE);
                     enableReminderCheckBox.setVisibility(View.VISIBLE);
@@ -238,6 +243,7 @@ public class ViewListActivity extends Activity {
             if (isUnique) {
                 list.addItemToList(text);
                 adapter.addItem(text);
+              //  adapter.updateViews();
             } else {
                 // add toast "Item name already in list!"
                 Toast.makeText(ViewListActivity.this, "'" + text + "' is already in the list!",
@@ -251,6 +257,7 @@ public class ViewListActivity extends Activity {
         String listName = titleEditText.getText().toString();
         map = new HashMap<String,String>();
         itemNames = adapter.getNames();
+        adapter.getItemLogs();
         strike = adapter.getStrikes();
         if(itemNames.size() == strike.size()){
             for(int index = 0; index < itemNames.size(); index++){
@@ -287,6 +294,10 @@ public class ViewListActivity extends Activity {
             databaseHelper.updateList(list);
             return true;
         }
+    }
+
+    static boolean getEditMode() {
+        return editMode;
     }
 
 }

@@ -157,6 +157,31 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
+     *
+     * @return true if the item strikethrough value was successfully updated in the database and
+     *         false if it failed.
+     */
+    public boolean updateStrike(String name, String strike) {
+        String listID = getListID(name);
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        // Insert list info into the lists_table (all info except list items)
+        ContentValues itemValues = new ContentValues();
+        itemValues.put(ITEM_NAME, name); // List ID
+        itemValues.put(ITEM_STATUS, strike); // List name
+
+        String whereClause = "WHERE" + LIST_NAME + " =?";
+
+        // Inserting Row into lists table
+        int status = db.update(listID, itemValues, whereClause, new String[]{name});
+        if (status == 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Add a list to the database.
      * NOTE: Spaces in the list_name are replaced by underscore before insertion to database.
      * @param listObject listObject populated with all its fields.

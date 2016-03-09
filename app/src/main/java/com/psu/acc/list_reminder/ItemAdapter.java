@@ -23,18 +23,20 @@ public class ItemAdapter extends BaseAdapter {
 
     Context context;
     ArrayList<String> data;
-    ArrayList<String> strike;
+    ArrayList<String> strikes;
     private static LayoutInflater inflater = null;
     ListView listView;
+    DatabaseHelper db;
 
-    public ItemAdapter(Context context, ArrayList<String> data, ArrayList<String> strike) {
+    public ItemAdapter(Context context, ArrayList<String> data, ArrayList<String> strikes, DatabaseHelper db) {
         // TODO Auto-generated constructor stub
         this.context = context;
         this.data = data;
-        this.strike = strike;
+        this.strikes = strikes;
         inflater = (LayoutInflater) context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.listView = (ListView)((Activity)context).findViewById(R.id.item_list);
+        this.db = db;
     }
 
     @Override
@@ -58,33 +60,49 @@ public class ItemAdapter extends BaseAdapter {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         // TODO Auto-generated method stub
+        getItemLogs();
         View vi = convertView;
         if (vi == null)
             vi = inflater.inflate(R.layout.list_item, null);
         final TextView text = (TextView) vi.findViewById(R.id.item_name);
         text.setText(data.get(position));
+        Log.i("Position", Integer.toString(position));
         final RelativeLayout relLayout = (RelativeLayout) vi.findViewById(R.id.rel_layout);
+        if (strikes.get(position).equals("true")) {
+            relLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.gray));
+            text.setPaintFlags(text.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        } else {
+            relLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.yellow));
+            text.setPaintFlags(text.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+        }
         relLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (strike.get(position) == "false") {
+                if (strikes.get(position) == "false") {
                     relLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.gray));
                     text.setPaintFlags(text.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                    strike.set(position, "true");
+                    strikes.set(position, "true");
+                    //db.updateStrike(data.get(position), "true");
                 } else {
                     relLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.yellow));
                     text.setPaintFlags(text.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
-                    strike.set(position, "false");
+                    strikes.set(position, "false");
+                    //db.updateStrike(data.get(position), "false");
                 }
             }
         });
+        if (ViewListActivity.getEditMode() == true) {
+            relLayout.setClickable(false);
+        } else {
+            relLayout.setClickable(true);
+        }
         final ImageButton deleteItemButton = (ImageButton) vi.findViewById(R.id.delete_item_button);
         deleteItemButton.setOnClickListener(new View.OnClickListener() {
-            // delete item from
+            // delete item from list
             @Override
             public void onClick(View view) {
                 data.remove(position);
-                strike.remove(position);
+                strikes.remove(position);
                 notifyDataSetChanged();
                 updateViews();
                 Log.i("layouts = ", Integer.toString(listView.getCount()));
@@ -93,29 +111,31 @@ public class ItemAdapter extends BaseAdapter {
         return vi;
     }
 
-    private void updateViews() {
+    public void updateViews() {
         RelativeLayout relLayout;
         TextView text;
         for(int i=0; i<getCount(); i++) {
             relLayout = (RelativeLayout)listView.getChildAt(i);
-            text = (TextView) relLayout.findViewById(R.id.item_name);
-            if (strike.get(i) == "true") {
-                relLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.gray));
-                text.setPaintFlags(text.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            } else {
-                relLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.yellow));
-                text.setPaintFlags(text.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+            if (relLayout != null) {
+                text = (TextView) relLayout.findViewById(R.id.item_name);
+                if (strikes.get(i) == "true") {
+                    relLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.gray));
+                    text.setPaintFlags(text.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                } else {
+                    relLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.yellow));
+                    text.setPaintFlags(text.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+                }
             }
         }
     }
 
     public void addItem(String name) {
         data.add(name);
-        strike.add("false");
+        strikes.add("false");
         notifyDataSetChanged();
     }
 
-    public void setVisible(ListView listView) {
+    public void setVisible() {
         int listLength = getCount();
         RelativeLayout view;
         ImageButton button;
@@ -126,7 +146,7 @@ public class ItemAdapter extends BaseAdapter {
         }
     }
 
-    public void setInvisible(ListView listView) {
+    public void setInvisible() {
         int listLength = getCount();
         RelativeLayout view;
         ImageButton button;
@@ -137,12 +157,39 @@ public class ItemAdapter extends BaseAdapter {
         }
     }
 
+    public void setUnclickable() {
+        int listLength = getCount();
+        RelativeLayout view;
+        for (int i=0; i<listLength; i++) {
+            view = (RelativeLayout) listView.getChildAt(i);
+            view.setClickable(false);
+        }
+    }
+
+    public void setClickable() {
+        int listLength = getCount();
+        RelativeLayout view;
+        for (int i=0; i<listLength; i++) {
+            view = (RelativeLayout) listView.getChildAt(i);
+            view.setClickable(true);
+        }
+    }
+
     public ArrayList<String> getNames() {
         return data;
     }
 
     public ArrayList<String> getStrikes() {
-        return strike;
+        return strikes;
+    }
+
+    public void getItemLogs() {
+        for (String item: data) {
+            Log.i("data ", "= " + item);
+        }
+        for (String item:strikes) {
+            Log.i("strikes ", "= " + item);
+        }
     }
 
 }
