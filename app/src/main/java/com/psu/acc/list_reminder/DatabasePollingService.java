@@ -38,7 +38,6 @@ public class DatabasePollingService extends IntentService{
     private void pollDataBase(){
         while(true){
             databaseHelper = DatabaseHelper.getInstance(DatabasePollingService.this);
-            SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
             List<String> storedListIds = databaseHelper.getAllListIDs();
             for(String listId: storedListIds)
@@ -47,12 +46,16 @@ public class DatabasePollingService extends IntentService{
                 if(list.getReminderEnabled().equalsIgnoreCase("true")) {
                     //Get current date time for comparison
                     Date currentDateTime = new Date();
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mma");
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("M/d/yyyy h:mma");
                     String currentDateTimeStr = dateFormat.format(currentDateTime);
+                    System.out.println("Current date: " + currentDateTimeStr);
+                    //Build list's date and time
                     StringBuilder reminderDateTime = new StringBuilder(list.getReminderDate());
                     reminderDateTime.append(" ").append(list.getReminderTime());
-                    if (list.getReminderRecurrence().equals("none") && reminderDateTime.toString().equalsIgnoreCase(currentDateTimeStr)) {
-                            triggerAlarm(list.getListName());
+                    System.out.println("List's date time: " + reminderDateTime.toString());
+                    if (list.getReminderRecurrence().equalsIgnoreCase("never") && reminderDateTime.toString().equalsIgnoreCase(currentDateTimeStr)) {
+                        System.out.println("Same for list: " + list.getListName());
+                        triggerAlarm(list.getListName());
                     } else if (list.getReminderRecurrence().equals("daily")) {
                         //TO DO
                         int hours = hoursAgo(reminderDateTime.toString());
@@ -78,7 +81,7 @@ public class DatabasePollingService extends IntentService{
 
         /* Create an Intent and set the class which will execute the onRecieve() method when Alarm triggers. */
         Intent intentAlarm = new Intent(this, AlarmReceiver.class);
-        intentAlarm.putExtra("LIST_NAME",listName);
+        intentAlarm.putExtra("LIST_NAME", listName);
 
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         //Set the alarm for now

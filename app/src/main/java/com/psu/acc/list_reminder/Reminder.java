@@ -38,7 +38,7 @@ public class Reminder extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.reminder);
         Date date = new Date();
-        SimpleDateFormat ft = new SimpleDateFormat ("dd/MM/yyyy");
+        SimpleDateFormat ft = new SimpleDateFormat ("M/d/yyyy");
         date1 = ft.format(date).toString();
 
         Bundle xtra = getIntent().getExtras();
@@ -49,7 +49,7 @@ public class Reminder extends AppCompatActivity {
         }
 
 
-        SimpleDateFormat ft1 = new SimpleDateFormat ("hh:mm a");
+        SimpleDateFormat ft1 = new SimpleDateFormat ("hh:mma");
         time1 = ft1.format(date).toString();
 
         //repeat alarm...
@@ -70,7 +70,7 @@ public class Reminder extends AppCompatActivity {
         TextView tvDate = (TextView) findViewById(R.id.tvDate);
         TextView tv = (TextView) findViewById(R.id.tvTime);
 
-
+        System.out.println("Initial Date: " + date1);
         tvDate.setText(date1);
         tv.setText(time1);
 
@@ -104,6 +104,7 @@ public class Reminder extends AppCompatActivity {
                 reminder1 = s.getSelectedItem().toString();
 
                 Intent intent = getIntent();
+                System.out.println("In intent: \t Date: " + date1 + " Time: " + time1 + "Reminder: " + reminder1);
                 intent.putExtra("time",time1);
                 intent.putExtra("date",date1);
                 intent.putExtra("reminder",reminder1);
@@ -160,7 +161,9 @@ public class Reminder extends AppCompatActivity {
 
             String datenow =date1;
             date1 = month + "/" + day + "/" + year;
-            if(date1.compareTo(datenow)<0){
+            System.out.println("In populateSetDate: \t Date: " + date1 + " Date now: " + datenow);
+
+            if(date1.compareTo(datenow)<0) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setTitle("Warning!");
                 builder.setMessage("The date you selected is a past date.Please select the current date or a future one.!")
@@ -172,21 +175,17 @@ public class Reminder extends AppCompatActivity {
                         });
                 AlertDialog alert = builder.create();
                 alert.show();
-
             }
-            else{
-
-            TextView tvDate = (TextView) findViewById(R.id.tvDate);
-            tvDate.setText(date1);
+            else {
+                TextView tvDate = (TextView) findViewById(R.id.tvDate);
+                System.out.println("In populateSetDate: \t Final date set: " + date1);
+                tvDate.setText(date1);
             }
         }
 
         @Override
         public void onDateSet(android.widget.DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-
-
             populateSetDate(year, monthOfYear + 1, dayOfMonth);
-
         }
     }
 
@@ -215,20 +214,20 @@ public class Reminder extends AppCompatActivity {
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
             // Do something with the time chosen by the user
 
-            String AMPM ="am";
+            String AMPM ="AM";
             String min;
 
             if(hourOfDay>12)
             {
                 hourOfDay = hourOfDay -12;
-                AMPM = "pm";
+                AMPM = "PM";
 
             }
             else{
                 if(hourOfDay==0)
                     hourOfDay =12;
                 else if(hourOfDay==12)
-                    AMPM="pm";
+                    AMPM="PM";
             }
             if(minute<10){
                 min= "0"+minute;

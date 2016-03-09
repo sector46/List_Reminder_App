@@ -29,8 +29,8 @@ public class AlarmReceiver extends BroadcastReceiver {
         // Open NotificationView Class on Notification Click
         Intent intent = new Intent(context, NotificationView.class);
         // Send data to NotificationView Class
-        intent.putExtra("title", listName);
-        intent.putExtra("text", "Do it.. Do it now !!");
+        intent.putExtra("title", listName + " is due..");
+        intent.putExtra("text", "Do it.. Do it now!!");
         // Open NotificationView.java Activity
         PendingIntent pIntent = PendingIntent.getActivity(context, 0, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
@@ -46,7 +46,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                         // Set Title
                 .setContentTitle(context.getString(R.string.notificationtitle))
                         // Set Text
-                .setContentText(listName)
+                .setContentText("List '" + listName + "' is due now!")
                         // Add an Action Button below Notification
                 .addAction(R.drawable.view_icon, "View", pIntent)
                         // Set PendingIntent into Notification
