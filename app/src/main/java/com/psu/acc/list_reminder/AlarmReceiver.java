@@ -1,8 +1,13 @@
 package com.psu.acc.list_reminder;
 
+import android.annotation.TargetApi;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
+import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
 /**
@@ -13,15 +18,47 @@ public class AlarmReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent)
     {
         System.out.println("Inside the on receive for Alarm Receiver");
-        // TODO Auto-generated method stub
-
-
-        // here you can start an activity or service depending on your need
-        // for ex you can start an activity to vibrate phone or to ring the phone
-
-        String phoneNumberReciver="9718202185";// phone number to which SMS to be send
-        String message="Hi I will be there later, See You soon";// message to send
         // Show the toast  like in above screen shot
-        Toast.makeText(context, "Alarm Triggered and SMS Sent", Toast.LENGTH_LONG).show();
+        Toast.makeText(context, "Alarm Triggered", Toast.LENGTH_LONG).show();
+        Notification(context,intent.getStringExtra("LIST_NAME"));
+
+    }
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    public void Notification(Context context, String listName) {
+        // Open NotificationView Class on Notification Click
+        Intent intent = new Intent(context, NotificationView.class);
+        // Send data to NotificationView Class
+        intent.putExtra("title", listName);
+        intent.putExtra("text", "Do it.. Do it now !!");
+        // Open NotificationView.java Activity
+        PendingIntent pIntent = PendingIntent.getActivity(context, 0, intent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+
+
+        // Create Notification using NotificationCompat.Builder
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(
+                context)
+                // Set Icon
+                .setSmallIcon(R.drawable.notification_icon)
+                        // Set Ticker Message
+                .setTicker(listName)
+                        // Set Title
+                .setContentTitle(context.getString(R.string.notificationtitle))
+                        // Set Text
+                .setContentText(listName)
+                        // Add an Action Button below Notification
+                .addAction(R.drawable.view_icon, "View", pIntent)
+                        // Set PendingIntent into Notification
+                .setContentIntent(pIntent)
+                        // Dismiss Notification
+                .setAutoCancel(true);
+
+        // Create Notification Manager
+        NotificationManager notificationmanager = (NotificationManager) context
+                .getSystemService(Context.NOTIFICATION_SERVICE);
+        // Build Notification with Notification Manager
+        notificationmanager.notify(0, builder.build());
+
     }
 }

@@ -154,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
                 ListObject listObject = databaseHelper.getList(listID);
                 listObject.displayList();
             }
-//
+            //
 //            for (String list : existingLists)
 //                System.out.println(list);
             adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, android.R.id.text1, existingLists);
