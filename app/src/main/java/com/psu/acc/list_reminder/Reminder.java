@@ -49,7 +49,7 @@ public class Reminder extends AppCompatActivity {
         }
 
 
-        SimpleDateFormat ft1 = new SimpleDateFormat ("hh:mma");
+        SimpleDateFormat ft1 = new SimpleDateFormat ("h:mma");
         time1 = ft1.format(date).toString();
 
         //repeat alarm...
