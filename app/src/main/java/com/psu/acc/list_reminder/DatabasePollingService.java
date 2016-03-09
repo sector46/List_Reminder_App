@@ -51,7 +51,7 @@ public class DatabasePollingService extends IntentService{
                     String currentDateTimeStr = dateFormat.format(currentDateTime);
                     StringBuilder reminderDateTime = new StringBuilder(list.getReminderDate());
                     reminderDateTime.append(" ").append(list.getReminderTime());
-                    if (list.getReminderRecurrence().equals("none") && reminderDateTime.toString().equals(currentDateTimeStr)) {
+                    if (list.getReminderRecurrence().equals("none") && reminderDateTime.toString().equalsIgnoreCase(currentDateTimeStr)) {
                             triggerAlarm(list.getListName());
                     } else if (list.getReminderRecurrence().equals("daily")) {
                         //TO DO

@@ -283,7 +283,7 @@ public class ViewListActivity extends Activity {
                 list.setReminderTime("None");
             } else {
                 list.setReminderDate(dateTime.split(" ")[0]);
-                list.setReminderTime(dateTime.split(" ")[1]+dateTime.split(" ")[2]);
+                list.setReminderTime(dateTime.split(" ")[1]);
             }
             list.setReminderEnabled(reminderEnabled);
             databaseHelper.updateList(list);
