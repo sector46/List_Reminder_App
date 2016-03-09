@@ -5,15 +5,12 @@ import android.app.IntentService;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -58,19 +55,33 @@ public class DatabasePollingService extends IntentService{
                         //Build list's date and time
                         StringBuilder reminderDateTime = new StringBuilder(list.getReminderDate());
                         reminderDateTime.append(" ").append(list.getReminderTime());
-                        if (list.getReminderRecurrence().equalsIgnoreCase("never") && reminderDateTime.toString().equalsIgnoreCase(currentDateTimeStr)) {
-                            triggerAlarm(list.getListName());
-                            //Disable reminder
-                            list.setReminderEnabled("false");
-                            databaseHelper.updateList(list);
-                        } else if (list.getReminderRecurrence().equals("daily")) {
-                            //TO DO
-                            int hours = hoursAgo(reminderDateTime.toString());
-                            System.out.println(hours);
-                        } else if (list.getReminderRecurrence().equals("weekly")) {
-                            //To DO
-                        } else if (list.getReminderRecurrence().equals("monthly")) {
-                            //To DO
+                        System.out.println("Find difference between " + currentDateTimeStr + " and " + reminderDateTime + " for list " + list.getListName());
+                        //Find differences between 2 timestamps
+                        TimeBetweenTwoTimestamps differenceInTime = null;
+                        try {
+                            differenceInTime = calculateDifferenceBetweenTimeStamps(
+                                    dateFormat.parse(currentDateTimeStr), dateFormat.parse(reminderDateTime.toString()));
+                        } catch (ParseException e){
+                            e.printStackTrace();
+                        }
+                        if (differenceInTime!=null) {
+                            differenceInTime.displayDifferenceInTime();
+                            if (reminderDateTime.toString().equalsIgnoreCase(currentDateTimeStr)) {
+                                triggerAlarm(list.getListName());
+                                //Disable reminder
+                                list.setReminderEnabled("false");
+                                databaseHelper.updateList(list);
+                            } else if (list.getReminderRecurrence().equalsIgnoreCase("daily")) {
+                                if (differenceInTime.oneOrMoreDayDifference())
+                                    triggerAlarm(list.getListName());
+
+                            } else if (list.getReminderRecurrence().equalsIgnoreCase("weekly")) {
+                                if (differenceInTime.oneOrMoreWeeksDifference())
+                                    triggerAlarm(list.getListName());
+                            } else if (list.getReminderRecurrence().equalsIgnoreCase("monthly")) {
+                                if (differenceInTime.oneOrMoreMonthsDifference())
+                                    triggerAlarm(list.getListName());
+                            }
                         }
                     }
                 }
@@ -93,18 +104,24 @@ public class DatabasePollingService extends IntentService{
         return true;
     }
 
-    public static int hoursAgo(String datetime) {
-        try {
-            Calendar date = Calendar.getInstance();
-            date.setTime(new SimpleDateFormat("dd/MM/yyyy HH:mma", Locale.ENGLISH).parse(datetime)); // Parse into Date object
-            Calendar now = Calendar.getInstance(); // Get time now
-            long differenceInMillis = now.getTimeInMillis() - date.getTimeInMillis();
-            long differenceInHours = (differenceInMillis) / 1000L / 60L / 60L; // Divide by millis/sec, secs/min, mins/hr
-            return (int) differenceInHours;
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return 0;
-        }
+    public static TimeBetweenTwoTimestamps calculateDifferenceBetweenTimeStamps(Date currentTime, Date listTime) {
+        TimeBetweenTwoTimestamps timeDifference = new TimeBetweenTwoTimestamps();
+        timeDifference.setCurrentDate(currentTime);
+        timeDifference.setListDate(listTime);
+        long diff = currentTime.getTime() - listTime.getTime();
+
+        long diffSeconds = diff / 1000 % 60;
+        long diffMinutes = diff / (60 * 1000) % 60;
+        long diffHours = diff / (60 * 60 * 1000) % 24;
+        long diffDays = diff / (24 * 60 * 60 * 1000);
+
+        timeDifference.setDifferenceInDays(diffDays);
+        timeDifference.setDifferenceInHours(diffHours);
+        timeDifference.setDifferenceInMinutes(diffMinutes);
+        timeDifference.setDifferenceInSeconds(diffSeconds);
+
+        return timeDifference;
+
     }
 
 }
