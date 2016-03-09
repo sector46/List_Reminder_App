@@ -27,10 +27,12 @@ public class ItemAdapter extends BaseAdapter {
     private static LayoutInflater inflater = null;
     ListView listView;
     DatabaseHelper db;
+    ListObject list;
 
-    public ItemAdapter(Context context, ArrayList<String> data, ArrayList<String> strikes, DatabaseHelper db) {
+    public ItemAdapter(Context context, ListObject list, ArrayList<String> data, ArrayList<String> strikes, DatabaseHelper db) {
         // TODO Auto-generated constructor stub
         this.context = context;
+        this.list = list;
         this.data = data;
         this.strikes = strikes;
         inflater = (LayoutInflater) context
@@ -60,7 +62,6 @@ public class ItemAdapter extends BaseAdapter {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         // TODO Auto-generated method stub
-        getItemLogs();
         View vi = convertView;
         if (vi == null)
             vi = inflater.inflate(R.layout.list_item, null);
@@ -78,16 +79,20 @@ public class ItemAdapter extends BaseAdapter {
         relLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (strikes.get(position) == "false") {
+                if (strikes.get(position).equals("false")) {
                     relLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.gray));
                     text.setPaintFlags(text.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                     strikes.set(position, "true");
-                    //db.updateStrike(data.get(position), "true");
+                    db.updateStrike(list.getListID(), data.get(position), "true");
+                    Log.i("strikes-True: ", strikes.get(position));
+                    getItemLogs();
                 } else {
                     relLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.yellow));
                     text.setPaintFlags(text.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
                     strikes.set(position, "false");
-                    //db.updateStrike(data.get(position), "false");
+                    db.updateStrike(list.getListID(), data.get(position), "false");
+                    Log.i("strikes-False: ", strikes.get(position));
+                    getItemLogs();
                 }
             }
         });
@@ -118,7 +123,7 @@ public class ItemAdapter extends BaseAdapter {
             relLayout = (RelativeLayout)listView.getChildAt(i);
             if (relLayout != null) {
                 text = (TextView) relLayout.findViewById(R.id.item_name);
-                if (strikes.get(i) == "true") {
+                if (strikes.get(i).equals("true")) {
                     relLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.gray));
                     text.setPaintFlags(text.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                 } else {

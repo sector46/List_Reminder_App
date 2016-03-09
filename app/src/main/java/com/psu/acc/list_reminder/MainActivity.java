@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.CollapsibleActionView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,6 +23,8 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -153,6 +156,7 @@ public class MainActivity extends AppCompatActivity {
             existingListsView.setAdapter(adapter);
             //For debugging
             existingLists = databaseHelper.getAllListNames();
+            Collections.sort(existingLists);
             for (String list : existingLists) {
                 String listID = databaseHelper.getListID(list);
                 ListObject listObject = databaseHelper.getList(listID);

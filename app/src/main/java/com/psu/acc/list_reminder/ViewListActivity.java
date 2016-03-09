@@ -120,7 +120,7 @@ public class ViewListActivity extends Activity {
         itemNames = new ArrayList<>(list.getListItems().keySet());
         strike = new ArrayList<>(list.getListItems().values());
 
-        adapter = new ItemAdapter(this, itemNames, strike, databaseHelper);
+        adapter = new ItemAdapter(this, list, itemNames, strike, databaseHelper);
         listView.setAdapter(adapter);
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
