@@ -34,7 +34,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
     private static final String LIST_ID = "list_id"; //Primary Key for Lists Table
     private static final String LIST_NAME = "list_name";
-    private static final String REMINDER = "reminder_date_time";
+    private static final String REMINDER_DATE = "reminder_date";
+    private static final String REMINDER_TIME = "reminder_time";
     private static final String REMINDER_RECURRENCE = "reminder_recurrence";
     private static final String REMINDER_ENABLED = "reminder_enabled";
 
@@ -42,7 +43,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String ITEM_NAME = "item_name";
     private static final String ITEM_STATUS = "item_status";
 
-    private static final String[] LISTS_TABLE_COLUMNS = {LIST_ID, LIST_NAME, REMINDER, REMINDER_RECURRENCE, REMINDER_ENABLED};
+    private static final String[] LISTS_TABLE_COLUMNS = {LIST_ID, LIST_NAME, REMINDER_DATE, REMINDER_TIME, REMINDER_RECURRENCE, REMINDER_ENABLED};
 
     /**
      * Use the application context as suggested by CommonsWare. This will ensure that you don't accidentally leak an Activity's context.
@@ -74,7 +75,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // SQL statement to create lists table
     String CREATE_LISTS_TABLE = "CREATE TABLE " + LISTS_TABLE + " ( " + LIST_ID + " TEXT PRIMARY KEY, " +
                 LIST_NAME + " TEXT," +
-                REMINDER + " TEXT," +
+                REMINDER_DATE + " TEXT," +
+                REMINDER_TIME + " TEXT," +
                 REMINDER_RECURRENCE + " TEXT, " +
                 REMINDER_ENABLED + " TEXT)";
 
@@ -171,7 +173,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             ContentValues listValues = new ContentValues();
             listValues.put(LIST_ID, listID); // List ID
             listValues.put(LIST_NAME, listName); // List name
-            listValues.put(REMINDER, listObject.getReminderDateTime()); // Reminder for list
+            listValues.put(REMINDER_DATE, listObject.getReminderDate()); // Reminder date for list
+            listValues.put(REMINDER_TIME, listObject.getReminderTime()); //Reminder time for list (hh:mm AM/PM)
             listValues.put(REMINDER_RECURRENCE, listObject.getReminderRecurrence()); // Recurrence for the reminder
             listValues.put(REMINDER_ENABLED, listObject.getReminderEnabled()); // If reminder is enabled.
             // Inserting Row into lists table
@@ -232,8 +235,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.delete(LISTS_TABLE, LIST_ID + "=?", new String[]{ID});
     }
 
-
-
     /**
      * Removes a specific item from the list table in the database.
      * @param listID ID of the list.
@@ -279,9 +280,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String listNameFromDB = listCursor.getString(1);
         listObject.setListID(listIDFromDB);
         listObject.setListName(listNameFromDB.replaceAll("_", " "));
-        listObject.setReminderDateTime(listCursor.getString(2));
-        listObject.setReminderRecurrence(listCursor.getString(3));
-        listObject.setReminderEnabled(listCursor.getString(4));
+        listObject.setReminderDate(listCursor.getString(2));
+        listObject.setReminderTime(listCursor.getString(3));
+        listObject.setReminderRecurrence(listCursor.getString(4));
+        listObject.setReminderEnabled(listCursor.getString(5));
 
         listCursor.close();
 

@@ -89,13 +89,14 @@ public class ViewListActivity extends Activity {
 //        items.put("Eggs", "false");
 //        items.put("Bananas", "false");
 //        items.put("Bread", "false");
-        String reminderDateTime = "No reminder is set"; //"03.01.2016 12:45 AM";
+        String reminderDate = "None"; //"03.01.2016 12:45 AM";
+        String reminderTime = "None";
         String reminderRecurrence = "Never"; //Daily";
         String reminderEnabled = "false"; //"true";
 
         //If list is null, meaning you've clicked new at MainActivity, instantiate ListObject
         if (list == null)
-            list = new ListObject(listID, name, items, reminderDateTime, reminderRecurrence, reminderEnabled);
+            list = new ListObject(listID, name, items, reminderDate, reminderTime, reminderRecurrence, reminderEnabled);
 
         //if this activity is called from templates class callingClass will be true and then set listname as blank
         if(callingClass)
@@ -103,19 +104,21 @@ public class ViewListActivity extends Activity {
         else
             titleEditText.setText(list.getListName());
 
-
-        reminderTextView.setText(list.getReminderDateTime());
+        if (list.getReminderTime().equals("None") && list.getReminderDate().equals("None")) {
+            reminderTextView.setText("No reminder is set");
+        } else {
+            reminderTextView.setText(list.getReminderDate() + " " + list.getReminderTime());
+        }
         if (list.getReminderEnabled().equals("true")) {
             enableReminderCheckBox.setChecked(true);
         } else {
             enableReminderCheckBox.setChecked(false);
         }
-        itemNames = new ArrayList<String>(list.getListItems().keySet());
-        strike = new ArrayList<String>(list.getListItems().values());
+        itemNames = new ArrayList<>(list.getListItems().keySet());
+        strike = new ArrayList<>(list.getListItems().values());
 
         adapter = new ItemAdapter(this, itemNames, strike);
         listView.setAdapter(adapter);
-
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
@@ -197,9 +200,10 @@ public class ViewListActivity extends Activity {
             super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             reminderTextView.setText(data.getStringExtra("date") + " " + data.getStringExtra("time") +
-                            " - " + data.getStringExtra("reminder"));
-                    list.setReminderDateTime(data.getStringExtra("date") + " " + data.getStringExtra("time") +
-                            " - " + data.getStringExtra("reminder"));
+                    " - " + data.getStringExtra("reminder"));
+                    list.setReminderDate(data.getStringExtra("date"));
+                    list.setReminderTime(data.getStringExtra("time"));
+                    list.setReminderRecurrence(data.getStringExtra("reminder"));
                }
 
     }
@@ -264,16 +268,21 @@ public class ViewListActivity extends Activity {
             Toast.makeText(ViewListActivity.this, "You have not entered a Title for the list. Please enter a Title!",
                     Toast.LENGTH_SHORT).show();
             return false;
-
         } else if(databaseHelper.isNameInUse(list.getListID(), listName)) {
             Toast.makeText(ViewListActivity.this, "That list name is already used by another list!",
                     Toast.LENGTH_SHORT).show();
             return false;
-
         } else {
             list.setListName(listName);
             list.setListItems(map);
-            list.setReminderDateTime(reminderTextView.getText().toString());
+            String dateTime = reminderTextView.getText().toString();
+            if (dateTime.equals("No reminder is set")) {
+                list.setReminderDate("None");
+                list.setReminderTime("None");
+            } else {
+                list.setReminderDate(dateTime.split(" ")[0]);
+                list.setReminderTime(dateTime.split(" ")[1]);
+            }
             list.setReminderEnabled(reminderEnabled);
             databaseHelper.updateList(list);
             return true;

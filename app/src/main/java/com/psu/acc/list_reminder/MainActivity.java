@@ -1,6 +1,8 @@
 package com.psu.acc.list_reminder;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -17,8 +19,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -53,20 +57,27 @@ public class MainActivity extends AppCompatActivity {
         //Testing the DatabaseHelper methods. (to be removed after integration)
         databaseHelper = DatabaseHelper.getInstance(MainActivity.this);
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
+        /*List<String> existingListIDs = databaseHelper.getAllListIDs();
+        System.out.println("Lists so far: (then remove them all)");
+        for (String listName : existingListIDs){
+            System.out.println("\t" + listName);
+            databaseHelper.removeList(listName);
+        }*/
 //       databaseHelper.removeList();
 //
 //        //Display existing lists, and remove all initially
-//        List<String> existingLists = databaseHelper.getAllListNames();
-//        System.out.println("Lists so far: (then remove them all)");
-//        for (String listName : existingLists){
-//            System.out.println("\t" + listName);
-//            databaseHelper.removeList(listName);
-//        }
-//        databaseHelper.dropListsTable();
+        /*List<String> existingLists = databaseHelper.getAllListNames();
+        System.out.println("Lists so far: (then remove them all)");
+        for (String listName : existingLists){
+            System.out.println("\t" + listName);
+            databaseHelper.removeListUsingName(listName);
+        }
+        databaseHelper.dropListsTable();
+        databaseHelper.onCreate(db);*/
 //
 //        //Create lists_table and three new lists.
 //        // onCreate method to be called only if you hadn't dropped the lists table (like line 67)
-//        databaseHelper.onCreate(db);
+
 //        HashMap<String, String> items = new HashMap<>();
 //        items.put("Egg", "false");
 //        items.put("Milk", "false");
@@ -124,6 +135,13 @@ public class MainActivity extends AppCompatActivity {
 //        aList.displayList();
 
         displayExistingLists();
+
+        startAlarmService();
+    }
+
+    private void startAlarmService() {
+        Intent intent = new Intent(Intent.ACTION_SYNC, null, this, DatabasePollingService.class);
+        startService(intent);
     }
 
     //Display existing lists on the MainActivity page
@@ -133,7 +151,13 @@ public class MainActivity extends AppCompatActivity {
             listNames = new ArrayList<>(databaseHelper.getAllListNames());
 //            adapter = new ListAdapter(this,listNames,databaseHelper);
             existingListsView.setAdapter(adapter);
+            //For debugging
             existingLists = databaseHelper.getAllListNames();
+            for (String list : existingLists) {
+                String listID = databaseHelper.getListID(list);
+                ListObject listObject = databaseHelper.getList(listID);
+                listObject.displayList();
+            }
 //
 //            for (String list : existingLists)
 //                System.out.println(list);
@@ -146,7 +170,6 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                             String  itemValue    = (String) existingListsView.getItemAtPosition(position);
-
                             Intent i =new Intent(getApplicationContext(),ViewListActivity.class);
                             i.putExtra("listname", itemValue);
                             startActivity(i);
