@@ -159,8 +159,16 @@ public class Reminder extends AppCompatActivity {
 
             String datenow =date1;
             date1 = month + "/" + day + "/" + year;
-
-            if(date1.compareTo(datenow)<0) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("M/d/yyyy");
+            TimeBetweenTwoTimestamps timeBetweenTwoTimestamps = new TimeBetweenTwoTimestamps();
+            try {
+                timeBetweenTwoTimestamps.setCurrentDate(dateFormat.parse(datenow));
+                timeBetweenTwoTimestamps.setListDate(dateFormat.parse(date1));
+                timeBetweenTwoTimestamps.displayCurrentTimeAndListTime();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if(!timeBetweenTwoTimestamps.isListTimeGreaterThanCurrentTime()) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setTitle("Warning!");
                 builder.setMessage("The date you selected is a past date.Please select the current date or a future one.!")

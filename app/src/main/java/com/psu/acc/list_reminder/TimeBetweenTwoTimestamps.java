@@ -17,7 +17,6 @@ public class TimeBetweenTwoTimestamps {
     long differenceInMinutes = 0;
     long differenceInSeconds = 0;
 
-
     public Calendar getCurrentDate() {
         return currentDate;
     }
@@ -70,6 +69,10 @@ public class TimeBetweenTwoTimestamps {
         this.differenceInSeconds = differenceInSeconds;
     }
 
+    public void displayCurrentTimeAndListTime() {
+        System.out.println("Current time: " + currentDate + ", list time: " + listDate);
+    }
+
     public void displayDifferenceInTime() {
         System.out.println(differenceInDays + " days, " + differenceInHours + " hours, "
                 + differenceInMinutes + " minutes, " + differenceInSeconds + " seconds.");
@@ -93,6 +96,13 @@ public class TimeBetweenTwoTimestamps {
     public boolean oneOrMoreWeeksDifference() {
         if (differenceInSeconds == 0 && differenceInMinutes == 0 && differenceInHours == 0 && (currentDate.get(Calendar.DAY_OF_WEEK) == listDate.get(Calendar.DAY_OF_WEEK))
                 &&(currentDate.get(Calendar.DATE) > listDate.get(Calendar.DATE)))
+            return true;
+        else
+            return false;
+    }
+
+    public boolean isListTimeGreaterThanCurrentTime() {
+        if (listDate.after(currentDate) || listDate.equals(currentDate))
             return true;
         else
             return false;
