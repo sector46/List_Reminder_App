@@ -1,8 +1,6 @@
 package com.psu.acc.list_reminder;
 
-import android.app.AlarmManager;
 import android.app.AlertDialog;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -19,10 +17,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -71,9 +67,9 @@ public class MainActivity extends AppCompatActivity {
         for (String listName : existingLists){
             System.out.println("\t" + listName);
             databaseHelper.removeListUsingName(listName);
-        }
-        databaseHelper.dropListsTable();
-        databaseHelper.onCreate(db);*/
+        }*/
+//        databaseHelper.dropListsTable();
+//        databaseHelper.onCreate(db);/**/
 //
 //        //Create lists_table and three new lists.
 //        // onCreate method to be called only if you hadn't dropped the lists table (like line 67)
