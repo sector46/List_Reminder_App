@@ -14,6 +14,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by ARavi1 on 3/7/2016.
@@ -21,7 +23,7 @@ import java.util.Locale;
 public class DatabasePollingService extends IntentService{
 
     DatabaseHelper databaseHelper;
-   /**
+    /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
      *
      */
@@ -35,44 +37,44 @@ public class DatabasePollingService extends IntentService{
         pollDataBase();
     }
 
-    private void pollDataBase(){
-        while(true){
-            databaseHelper = DatabaseHelper.getInstance(DatabasePollingService.this);
+    private void pollDataBase() {
+        Date current = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("ss");
+        long delayInSeconds = 1000 * (60 - Integer.parseInt(formatter.format(current)));
+        Timer timer = new Timer();
+        TimerTask everyMinuteTask = new TimerTask() {
+            @Override
+            public void run() {
+                databaseHelper = DatabaseHelper.getInstance(DatabasePollingService.this);
 
-            List<String> storedListIds = databaseHelper.getAllListIDs();
-            for(String listId: storedListIds)
-            {
-                ListObject list = databaseHelper.getList(listId);
-                if(list.getReminderEnabled().equalsIgnoreCase("true")) {
-                    //Get current date time for comparison
-                    Date currentDateTime = new Date();
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("M/d/yyyy h:mma");
-                    String currentDateTimeStr = dateFormat.format(currentDateTime);
-                    System.out.println("Current date: " + currentDateTimeStr);
-                    //Build list's date and time
-                    StringBuilder reminderDateTime = new StringBuilder(list.getReminderDate());
-                    reminderDateTime.append(" ").append(list.getReminderTime());
-                    System.out.println("List's date time: " + reminderDateTime.toString());
-                    if (list.getReminderRecurrence().equalsIgnoreCase("never") && reminderDateTime.toString().equalsIgnoreCase(currentDateTimeStr)) {
-                        System.out.println("Same for list: " + list.getListName());
-                        triggerAlarm(list.getListName());
-                    } else if (list.getReminderRecurrence().equals("daily")) {
-                        //TO DO
-                        int hours = hoursAgo(reminderDateTime.toString());
-                        System.out.println(hours);
-                    } else if (list.getReminderRecurrence().equals("weekly")) {
-                        //To DO
-                    } else if (list.getReminderRecurrence().equals("monthly")) {
-                        //To DO
+                List<String> storedListIds = databaseHelper.getAllListIDs();
+                for (String listId : storedListIds) {
+                    ListObject list = databaseHelper.getList(listId);
+                    if (list.getReminderEnabled().equalsIgnoreCase("true")) {
+                        //Get current date time for comparison
+                        Date currentDateTime = new Date();
+                        System.out.println(currentDateTime);
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("M/d/yyyy h:mma");
+                        String currentDateTimeStr = dateFormat.format(currentDateTime);
+                        //Build list's date and time
+                        StringBuilder reminderDateTime = new StringBuilder(list.getReminderDate());
+                        reminderDateTime.append(" ").append(list.getReminderTime());
+                        if (list.getReminderRecurrence().equalsIgnoreCase("never") && reminderDateTime.toString().equalsIgnoreCase(currentDateTimeStr)) {
+                            triggerAlarm(list.getListName());
+                        } else if (list.getReminderRecurrence().equals("daily")) {
+                            //TO DO
+                            int hours = hoursAgo(reminderDateTime.toString());
+                            System.out.println(hours);
+                        } else if (list.getReminderRecurrence().equals("weekly")) {
+                            //To DO
+                        } else if (list.getReminderRecurrence().equals("monthly")) {
+                            //To DO
+                        }
                     }
                 }
             }
-            try {
-                Thread.sleep(60000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+        };
+        timer.schedule(everyMinuteTask, delayInSeconds, 1000*60);
     }
 
     private boolean triggerAlarm(String listName) {
