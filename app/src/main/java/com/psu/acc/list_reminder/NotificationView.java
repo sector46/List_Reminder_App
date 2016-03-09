@@ -26,7 +26,7 @@ public class NotificationView extends Activity{
         // Dismiss Notification
         notificationmanager.cancel(0);
 
-        // Retrive the data from MainActivity.java
+        // Retrieve the data from MainActivity.java
         Intent i = getIntent();
 
         title = i.getStringExtra("title");

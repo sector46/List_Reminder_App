@@ -50,8 +50,7 @@ public class DatabasePollingService extends IntentService{
                     String currentDateTimeStr = dateFormat.format(currentDateTime);
                     if(reminderDateTime.toString().equals(currentDateTimeStr)){
                         triggerAlarm(list.getListName());
-                    } else
-                        triggerAlarm(list.getListName());
+                    }
                 }
             }
             try {
