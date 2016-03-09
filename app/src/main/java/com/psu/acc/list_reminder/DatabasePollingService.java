@@ -53,7 +53,6 @@ public class DatabasePollingService extends IntentService{
                     if (list.getReminderEnabled().equalsIgnoreCase("true")) {
                         //Get current date time for comparison
                         Date currentDateTime = new Date();
-                        System.out.println(currentDateTime);
                         SimpleDateFormat dateFormat = new SimpleDateFormat("M/d/yyyy h:mma");
                         String currentDateTimeStr = dateFormat.format(currentDateTime);
                         //Build list's date and time
@@ -61,6 +60,9 @@ public class DatabasePollingService extends IntentService{
                         reminderDateTime.append(" ").append(list.getReminderTime());
                         if (list.getReminderRecurrence().equalsIgnoreCase("never") && reminderDateTime.toString().equalsIgnoreCase(currentDateTimeStr)) {
                             triggerAlarm(list.getListName());
+                            //Disable reminder
+                            list.setReminderEnabled("false");
+                            databaseHelper.updateList(list);
                         } else if (list.getReminderRecurrence().equals("daily")) {
                             //TO DO
                             int hours = hoursAgo(reminderDateTime.toString());

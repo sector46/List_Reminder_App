@@ -6,9 +6,11 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
-import android.widget.Toast;
+//import android.widget.Toast;
 
 /**
  * Created by ARavi1 on 3/7/2016.
@@ -17,38 +19,36 @@ public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent)
     {
-        System.out.println("Inside the on receive for Alarm Receiver");
-        // Show the toast  like in above screen shot
-        Toast.makeText(context, "Alarm Triggered", Toast.LENGTH_LONG).show();
-        Notification(context,intent.getStringExtra("LIST_NAME"));
-
+        // Show the toast on the app
+        //Toast.makeText(context, "Notification triggered!", Toast.LENGTH_LONG).show();
+        Notification(context, intent.getStringExtra("LIST_NAME"));
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public void Notification(Context context, String listName) {
-        // Open NotificationView Class on Notification Click
-        Intent intent = new Intent(context, NotificationView.class);
-        // Send data to NotificationView Class
-        intent.putExtra("title", listName + " is due..");
-        intent.putExtra("text", "Do it.. Do it now!!");
-        // Open NotificationView.java Activity
-        PendingIntent pIntent = PendingIntent.getActivity(context, 0, intent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
 
+        Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
+        //Calling NotificationView
+        Intent intent = new Intent(context, NotificationView.class);
+        PendingIntent pIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent dismissIntent = NotificationView.getDismissIntent(0, context);
 
         // Create Notification using NotificationCompat.Builder
         NotificationCompat.Builder builder = new NotificationCompat.Builder(
                 context)
-                // Set Icon
+                        // Set Icon
                 .setSmallIcon(R.drawable.notification_icon)
                         // Set Ticker Message
                 .setTicker(listName)
+                        // Set sound
+                .setSound(soundUri)
                         // Set Title
                 .setContentTitle(context.getString(R.string.notificationtitle))
                         // Set Text
                 .setContentText("List '" + listName + "' is due now!")
-                        // Add an Action Button below Notification
-                .addAction(R.drawable.view_icon, "View", pIntent)
+                        // Add an Action Button below Notification, just dismiss the notification on click.
+                .addAction(R.drawable.ok, "OK", dismissIntent)
                         // Set PendingIntent into Notification
                 .setContentIntent(pIntent)
                         // Dismiss Notification

@@ -107,7 +107,6 @@ public class ViewListActivity extends Activity {
         if (list.getReminderTime().equals("None") && list.getReminderDate().equals("None")) {
             reminderTextView.setText("No reminder is set");
         } else {
-            System.out.println("Reminder time - " + list.getReminderTime());
             reminderTextView.setText(list.getReminderDate() + " " + list.getReminderTime() + " - " + list.getReminderRecurrence());
         }
         if (list.getReminderEnabled().equals("true")) {
@@ -203,7 +202,6 @@ public class ViewListActivity extends Activity {
             reminderTextView.setText(data.getStringExtra("date") + " " + data.getStringExtra("time") +
                     " - " + data.getStringExtra("reminder"));
             list.setReminderDate(data.getStringExtra("date"));
-            System.out.println("Extra time:" + data.getStringExtra("time"));
             list.setReminderTime(data.getStringExtra("time"));
             list.setReminderRecurrence(data.getStringExtra("reminder"));
         }

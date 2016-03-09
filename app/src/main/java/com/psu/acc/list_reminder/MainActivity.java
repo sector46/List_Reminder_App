@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -27,7 +26,6 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseHelper databaseHelper;
     ArrayList<String> listNames;
     List<String> existingLists;
-//    ListAdapter adapter;
     ArrayAdapter<String> adapter;
 
 
@@ -50,88 +48,9 @@ public class MainActivity extends AppCompatActivity {
 
         existingListsView = (ListView) findViewById(R.id.existingListsView);
 
-        //Testing the DatabaseHelper methods. (to be removed after integration)
         databaseHelper = DatabaseHelper.getInstance(MainActivity.this);
-        SQLiteDatabase db = databaseHelper.getWritableDatabase();
-        /*List<String> existingListIDs = databaseHelper.getAllListIDs();
-        System.out.println("Lists so far: (then remove them all)");
-        for (String listName : existingListIDs){
-            System.out.println("\t" + listName);
-            databaseHelper.removeList(listName);
-        }*/
-//       databaseHelper.removeList();
-//
-//        //Display existing lists, and remove all initially
-        /*List<String> existingLists = databaseHelper.getAllListNames();
-        System.out.println("Lists so far: (then remove them all)");
-        for (String listName : existingLists){
-            System.out.println("\t" + listName);
-            databaseHelper.removeListUsingName(listName);
-        }*/
-//        databaseHelper.dropListsTable();
-//        databaseHelper.onCreate(db);/**/
-//
-//        //Create lists_table and three new lists.
-//        // onCreate method to be called only if you hadn't dropped the lists table (like line 67)
-
-//        HashMap<String, String> items = new HashMap<>();
-//        items.put("Egg", "false");
-//        items.put("Milk", "false");
-//        items.put("Bread", "false");
-//        items.put("Banana", "false");
-//        ListObject listObject1 = new ListObject("Grocery List", items, "March 12, 2016 10:00 am", "weekly", "true");
-//        databaseHelper.addList(listObject1);
-//        items = new HashMap<>();
-//        items.put("Chairs", "false");
-//        items.put("Dining table", "false");
-//        items.put("Mattress", "false");
-//        items.put("Coffee table", "false");
-//        ListObject listObject2 = new ListObject("Garage Sale", items, "March 20, 2016 7:00 pm", "none", "true");
-//        databaseHelper.addList(listObject2);
-//        items = new HashMap<>();
-//        items.put("Tees", "false");
-//        items.put("Boots", "false");
-//        items.put("Skateboard", "false");
-//        ListObject listObject3 = new ListObject("Thanksgiving Shopping", items, "Nov 15, 2016 5:00 pm", "none", "true");
-//        databaseHelper.addList(listObject3);
-//
-//        //Display newly created list names
-//        existingLists = databaseHelper.getAllListNames();
-//        System.out.println("Created 3 new lists:");
-//        for (String listName : existingLists){
-//            System.out.println("\t" + listName);
-//        }
-//
-//        //Retrieve a list and display its attributes.
-//        System.out.println("Displaying Garage Sale List");
-//        ListObject aList = databaseHelper.getList("Garage Sale");
-//        aList.displayList();
-//        //Removes item Dining table from list and display it
-//        System.out.println("Remove item Dining table from Garage Sale");
-//        databaseHelper.removeItemFromList("Garage Sale", "Dining table");
-//        aList = databaseHelper.getList("Garage Sale");
-//        System.out.println("Updated Garage Sale List");
-//        aList.displayList();
-//        //Remove Grocery List
-//        System.out.println("Remove Grocery List");
-//        databaseHelper.removeList("Grocery List");
-//
-//        //Update Thanksgiving Shopping, strike off boots (change value from false to true), and add new item 'Home theatre'
-//        aList = databaseHelper.getList("Thanksgiving Shopping");
-//        System.out.println("Original Thanksgiving Shopping List");
-//        aList.displayList();
-//        Map<String, String> itemsList3 = aList.getListItems();
-//        itemsList3.put("Home theatre", "false");
-//        itemsList3.put("Boots", "true");
-//        aList.setListItems(itemsList3);
-//        //Update list in the database, removes old one and creates a new one with the same name.
-//        databaseHelper.updateList(aList);
-//        System.out.println("Updated Thanksgiving Shopping");
-//        aList = databaseHelper.getList("Thanksgiving Shopping");
-//        aList.displayList();
 
         displayExistingLists();
-
         startAlarmService();
     }
 
@@ -145,18 +64,9 @@ public class MainActivity extends AppCompatActivity {
         if (databaseHelper.getAllListNames().size() != 0) {
 
             listNames = new ArrayList<>(databaseHelper.getAllListNames());
-//            adapter = new ListAdapter(this,listNames,databaseHelper);
-            existingListsView.setAdapter(adapter);
-            //For debugging
+
             existingLists = databaseHelper.getAllListNames();
-            for (String list : existingLists) {
-                String listID = databaseHelper.getListID(list);
-                ListObject listObject = databaseHelper.getList(listID);
-                listObject.displayList();
-            }
-            //
-//            for (String list : existingLists)
-//                System.out.println(list);
+
             adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, android.R.id.text1, existingLists);
             existingListsView.setAdapter(adapter);
 
@@ -195,7 +105,6 @@ public class MainActivity extends AppCompatActivity {
                                     });
                             AlertDialog alert = builder.create();
                             alert.show();
-
 
                             return true;
                         }

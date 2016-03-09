@@ -70,7 +70,6 @@ public class Reminder extends AppCompatActivity {
         TextView tvDate = (TextView) findViewById(R.id.tvDate);
         TextView tv = (TextView) findViewById(R.id.tvTime);
 
-        System.out.println("Initial Date: " + date1);
         tvDate.setText(date1);
         tv.setText(time1);
 
@@ -104,7 +103,6 @@ public class Reminder extends AppCompatActivity {
                 reminder1 = s.getSelectedItem().toString();
 
                 Intent intent = getIntent();
-                System.out.println("In intent: \t Date: " + date1 + " Time: " + time1 + "Reminder: " + reminder1);
                 intent.putExtra("time",time1);
                 intent.putExtra("date",date1);
                 intent.putExtra("reminder",reminder1);
@@ -161,7 +159,6 @@ public class Reminder extends AppCompatActivity {
 
             String datenow =date1;
             date1 = month + "/" + day + "/" + year;
-            System.out.println("In populateSetDate: \t Date: " + date1 + " Date now: " + datenow);
 
             if(date1.compareTo(datenow)<0) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -178,7 +175,6 @@ public class Reminder extends AppCompatActivity {
             }
             else {
                 TextView tvDate = (TextView) findViewById(R.id.tvDate);
-                System.out.println("In populateSetDate: \t Final date set: " + date1);
                 tvDate.setText(date1);
             }
         }
