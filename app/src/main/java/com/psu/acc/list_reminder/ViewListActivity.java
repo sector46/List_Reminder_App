@@ -132,6 +132,19 @@ public class ViewListActivity extends Activity {
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
+        enableReminderCheckBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (enableReminderCheckBox.isChecked()) {
+                    Toast.makeText(ViewListActivity.this, "Reminder is ON!",
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(ViewListActivity.this, "Reminder is OFF!",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
         addItemConfirmationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
